@@ -6,7 +6,7 @@ class compteutilisateur:
         self.mot_de_passe = mot_de_passe
         self.identifiant = identifiant
 
-    #Création base de données utilisateurs
+    #Création base de données utilisateur
     #utiliser la commande suivante : pip install psycopg2
 
     def creation_base_donnees(self):
