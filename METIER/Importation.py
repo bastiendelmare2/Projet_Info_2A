@@ -53,6 +53,3 @@ def XML():
         xml_file.write(xml_content_str)
 
     return "Le fichier a bien été sauvegardé"
-
-
-XML()
