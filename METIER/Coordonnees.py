@@ -5,7 +5,7 @@ class Coordonnees:
         self.latitude = latitude
         self.longitude = longitude
 
-    def distance_haversine(self, autre_coordonnee):
+    def calculer_distance(self, autre_coordonnee):
         # Convertir les degrés en radians
         lat1 = math.radians(self.latitude)
         lon1 = math.radians(self.longitude)
@@ -28,5 +28,5 @@ class Coordonnees:
 point1 = Coordonnees(52.5200, 13.4050)
 point2 = Coordonnees(48.8566, 2.3522)
 
-distance = point1.distance_haversine(point2)
+distance = point1.calculer_distance(point2)
 print(f"La distance entre les deux points est d'environ {distance:.2f} mètres.")
