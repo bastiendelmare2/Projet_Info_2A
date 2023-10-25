@@ -1,49 +1,67 @@
 import requests
 import zipfile
-import io
-import sqlite3
-import xml.etree.ElementTree as ET
+from io import BytesIO
+import os
+from datetime import datetime
 
-# Télécharger et dézipper le fichier
-url = "https://donnees.roulez-eco.fr/opendata/instantane"
-response = requests.get(url)
 
-if response.status_code == 200:
-    zip_content = response.content
+def DownloadXML():
+    # URL du fichier à télécharger
+    url = "https://donnees.roulez-eco.fr/opendata/instantane"
 
-    with zipfile.ZipFile(io.BytesIO(zip_content)) as zip_file:
-        xml_file_name = "PrixCarburants_instantane.xml"
-       
-        if xml_file_name in zip_file.namelist():
-            xml_content = zip_file.read(xml_file_name).decode("latin-1")
-        else:
-            print(f"Le fichier {xml_file_name} n'existe pas dans le fichier zip.")
-else:
-    print("La requête a échoué avec le code de statut :", response.status_code)
+    # Requête GET à l'API de data.gouv
+    response = requests.get(url)
 
-# Créer une base de données SQLite
-conn = sqlite3.connect('stations.db')
+    # Vérification de la réussite de la requête (HTTP status code 200)
+    if response.status_code == 200:
+        # Extraction du contenu
+        zip_content = BytesIO(response.content)
 
-# Créer une table pour stocker les données
-c = conn.cursor()
-c.execute('''CREATE TABLE stations
-            (id INTEGER PRIMARY KEY,
-             pdv_id TEXT,
-             nom TEXT,
-             latitude REAL,
-             longitude REAL)''')
- 
+        # Dézipage
+        with zipfile.ZipFile(zip_content, "r") as zip_file:
+            # Vérification de la présence du document PrixCarburants_instantane.xml à l'intérieur
+            if "PrixCarburants_instantane.xml" in zip_file.namelist():
+                # Sauvegarde du fichier
+                xml_content = zip_file.read("PrixCarburants_instantane.xml")
 
-# Extraire les données du fichier XML et les insérer dans la base de données
-root = ET.fromstring(xml_content)
+                # Conversion du fichier (encodage ISO-8859-1)
+                xml_content_str = xml_content.decode("ISO-8859-1")
 
-for pdv_element in root.findall(".//pdv"):
-    pdv_id = pdv_element.get("id")
-    nom = pdv_element.find("adresse").text
-    latitude = float(pdv_element.get("latitude"))
-    longitude = float(pdv_element.get("longitude"))
+                # Réécriture dans le fichier pour qu'il indique le bon encodage final
+                xml_content_str = xml_content_str.replace(
+                    '<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>',
+                    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+                )
+            else:
+                return "Le fichier XML n'est pas présent dans l'archive."
+    else:
+        return "Erreur de téléchargement du fichier Zip."
 
-    c.execute("INSERT INTO stations (pdv_id, nom, latitude, longitude) VALUES (?, ?, ?, ?)", (pdv_id, nom, latitude, longitude))
+    # Répertoire et nom du fichier pour la sauvegarde
+    directory_path = "fichier_xml"
+    file_name = "stations_service.xml"
 
-conn.commit()
-conn.close()
+    # Création du dossier s'il n'existe pas
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+
+    # Chemin du fichier à sauvegarder
+    file_path = os.path.join(directory_path, file_name)
+
+    # Écriture
+    with open(file_path, "w", encoding="UTF-8") as xml_file:
+        xml_file.write(xml_content_str)
+
+    # Gestion de l'heure de téléchargement
+
+    # Date de téléchargement
+    current_datetime = datetime.now()
+
+    # Transformation en chaîne de caractères
+    date_str = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+
+    # Ajoutde la date à la fin du fichier XML
+    with open(file_path, "a", encoding="UTF-8") as xml_file:
+        xml_file.write("\n<!-- Imported on " + date_str + " -->")
+
+    return "Le fichier a bien été sauvegardé"
