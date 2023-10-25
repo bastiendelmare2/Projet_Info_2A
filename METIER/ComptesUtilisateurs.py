@@ -18,17 +18,18 @@ class compteutilisateur:
         )
 
     def connection_base_données(self):
+        request = "INSERT INTO users (names,alias) VALUES (%s,%s)"
         # Etape 1 : On récupère une connexion en utilisant la classe DBConnection.
-with DBConnection().connection as connection :
+        with DBConnection().connection as connection :
 
-# Etape 2 : à partir de la connexion on fait un curseur pour la requête 
-	with connection.cursor() as cursor : 
+            # Etape 2 : à partir de la connexion on fait un curseur pour la requête 
+	        with connection.cursor() as cursor : 
     
-    # Etape 3 : on exécute notre requête SQL.
-    		cursor.execute(requete_sql)
+                # Etape 3 : on exécute notre requête SQL.
+    		    cursor.execute(requete_sql)
     
-    # Etape 4 : on stocke le résultat de la requête
-    		res = cursor.fetchall()
+                    # Etape 4 : on stocke le résultat de la requête
+    		            res = cursor.fetchall()
 
 if res:
     # Etape 5 : on agence les résultats selon la forme souhaitée (liste...)
