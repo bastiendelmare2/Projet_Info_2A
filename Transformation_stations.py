@@ -1,23 +1,66 @@
 import xml.etree.ElementTree as ET
+from METIER.Horaires import Horaires
+from METIER.Services import Services
+from METIER.TypeCarburants import TypeCarburants
+from METIER.Coordonnees import Coordonnees
 from METIER.StationsServices import StationsServices
 
-tree = ET.parse(r'\\filer-eleves2\id2151\ProjetInfo2A\fichier_xml\stations_service.xml')
+
+tree = ET.parse(r"\\filer-eleves2\id2151\ProjetInfo2A\fichier_xml\stations_service.xml")
 root = tree.getroot()
-# Créer une liste pour stocker les objets "stations-service"
-liste_stations_service = []
+# Créez une liste pour stocker les objets StationService
+stations_service_list = []
 
-# Parcourir les éléments "pdv" dans le XML
-for pdv in root.findall('pdv'):
-    id = pdv.get('id')
-    adresse = pdv.find('adresse').text
-    ville = pdv.find('ville').text
+# Parcourez les éléments 'pdv' dans le fichier XML
+for pdv in root.findall("pdv"):
+    # Identifiant, adresse et ville
+    identifiant = pdv.get("id")
+    adresse = pdv.find("adresse").text
+    ville = pdv.find("ville").text
 
-    # Créer un objet "station-service" avec les attributs souhaités
-    station_service = StationsServices(id, adresse, ville)
+    # Coordonnées
+    latitude = pdv.get("latitude")
+    longitude = pdv.get("longitude")
+    coordonnees = Coordonnees(latitude, longitude)
 
-    # Ajouter l'objet à la liste
-    liste_stations_service.append(station_service)
+    # Carburants
+    carburants = []
+    for prix_element in pdv.findall(".//prix"):
+        nom = prix_element.get("nom")
+        prix = float(prix_element.get("valeur"))
+        carburant = TypeCarburants(nom, prix)
+        carburants.append(carburant)
 
-# Afficher la liste des stations-service
-for station_service in liste_stations_service:
-    print(station_service)
+    # Horaires
+    horaires = Horaires()
+    for jour_element in pdv.findall(".//jour"):
+        nom = jour_element.get("nom")
+        horaire_element = jour_element.find("horaire")
+        if horaire_element is not None:
+            ouverture = horaire_element.get("ouverture")
+            fermeture = horaire_element.get("fermeture")
+            horaires.ajouter_jour(identifiant, nom, ouverture, fermeture)
+
+    # Services
+    services = Services()
+    for service_element in pdv.find("services").findall("service"):
+        service_name = service_element.text
+        services.ajouter_service(service_name)
+
+    # Créez un objet StationService
+    station_service = StationsServices(
+        id_stations=identifiant,
+        adresse=adresse,
+        ville=ville,
+        typecarburants=carburants,
+        horaires=horaires,
+        coordonnees=coordonnees,
+        services=services,
+    )
+
+    # Ajoutez l'objet à la liste
+    stations_service_list.append(station_service)
+
+
+for station in stations_service_list:
+    print(station)
