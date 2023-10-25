@@ -19,7 +19,8 @@ def XML():
 
         # Dézipage
         with zipfile.ZipFile(zip_content, "r") as zip_file:
-            # Vérification de la présence du document PrixCarburants_instantane.xml à l'intérieur
+            # Vérification de la présence du document
+            # PrixCarburants_instantane.xml à l'intérieur
             if "PrixCarburants_instantane.xml" in zip_file.namelist():
                 # Sauvegarde du fichier
                 xml_content = zip_file.read("PrixCarburants_instantane.xml")

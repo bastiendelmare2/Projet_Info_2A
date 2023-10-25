@@ -1,5 +1,6 @@
 class Services:
-    def __init__(self, id_service, nom_service):
-        self.id_service = id_service
-        self.nom_service = nom_service
+    def __init__(self):
+        self.services = []  # Une liste pour stocker les services
 
+    def ajouter_service(self, service):
+        self.services.append(service)
