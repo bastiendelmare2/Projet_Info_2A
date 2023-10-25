@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 
 
-def DownloadXML():
+def XML():
     # URL du fichier à télécharger
     url = "https://donnees.roulez-eco.fr/opendata/instantane"
 
@@ -52,18 +52,7 @@ def DownloadXML():
     with open(file_path, "w", encoding="UTF-8") as xml_file:
         xml_file.write(xml_content_str)
 
-    # Gestion de l'heure de téléchargement
-
-    # Date de téléchargement
-    current_datetime = datetime.now()
-
-    # Transformation en chaîne de caractères
-    date_str = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
-
-    # Ajoutde la date à la fin du fichier XML
-    with open(file_path, "a", encoding="UTF-8") as xml_file:
-        xml_file.write("\n<!-- Imported on " + date_str + " -->")
-
     return "Le fichier a bien été sauvegardé"
 
-    DownloadXML("https://donnees.roulez-eco.fr/opendata/instantane")
+
+XML()
