@@ -65,3 +65,5 @@ def DownloadXML():
         xml_file.write("\n<!-- Imported on " + date_str + " -->")
 
     return "Le fichier a bien été sauvegardé"
+
+    DownloadXML("https://donnees.roulez-eco.fr/opendata/instantane")
