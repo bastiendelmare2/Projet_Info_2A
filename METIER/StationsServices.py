@@ -6,7 +6,7 @@ class StationsServices:
         ville,
         horaires,
         services,
-        typecarburants,
+        prixcarburants,
         coordonnees,
     ):
         self.id_stations = id_stations
@@ -14,7 +14,7 @@ class StationsServices:
         self.ville = ville
         self.horaires = horaires
         self.services = services
-        self.typecarburants = typecarburants
+        self.prixcarburants = prixcarburants
         self.coordonnees = coordonnees
 
     def __str__(self):
@@ -33,8 +33,8 @@ class StationsServices:
 
         # Carburants
         carburants_str = "carburants: "
-        for carburant in self.typecarburants:
-            carburants_str += f"Nom: {carburant.nom}, Prix: {carburant.prix} | "
+        for carburant in self.prixcarburants:
+            carburants_str += f"Nom: {carburant.type_carburant}, Prix: {carburant.prix} | "
 
         # Retourne une chaîne formatée
         return f"Station {self.id_stations}: {adresse_ville}, {horaires_str}, {services_str}, {carburants_str}"
