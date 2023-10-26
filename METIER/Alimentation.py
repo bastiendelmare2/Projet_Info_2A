@@ -14,56 +14,18 @@ class alimentation:
             password="id2221",
         )
 
-        # Créer un curseur
-        cursor = conn.cursor()
+    def connection_base(self):
+    # Etape 1 : On récupère une connexion en utilisant la classe DBConnection.
+    with DBConnection().connection as connection :
 
-        # Créer la base de données
-        cursor.execute("""CREATE DATABASE my_database
-        """)
-
-        # Commiter les modifications
-        conn.commit()
-
-        # Fermer la connexion à la base de données
-        conn.close()
-
-    def create_table(nom_table="Utilisateurs"):
-        # Ouvrir une connexion à la base de données
-        ouv_conn = sqlite3.connect(
-            host="eleves.domensai.ecole:5432",
-            database="id2221",
-            user="id2221",
-            password="id2221",
-            driver="psycopg2-binary",
-        )
-
-        # Créer un curseur
-        cursor = ouv_conn.cursor()
-
-        # Créer la table
-        cursor.execute("""CREATE TABLE {nom_table} (
-        id_utilisateur,
-        nom_utilisateur,
-        prenom_utilisateur,
-        age
-        );
-        """)
-
-        # Commiter les modifications
-        ouv_conn.commit()
-
-        # Fermer la connexion à la base de données
-        ouv_conn.close()
-
-    def modifier_database():
-        # Créer la chaîne de connexion
-        connection_string = (
-            "DRIVER={SQL Server Native Client 11.0};"
-            "SERVER=myserver.example.com;"
-            "DATABASE=mydatabase;"
-            "UID=myuser;"
-            "PWD=mypassword;"
-        )
+    # Etape 2 : à partir de la connexion on fait un curseur pour la requête 
+	    with connection.cursor() as cursor : 
+    
+        # Etape 3 : on exécute notre requête SQL.
+    	    	cursor.execute(requete_sql)
+    
+        # Etape 4 : on stocke le résultat de la requête
+    		    res = cursor.fetchall()
 
         # Ouvrir la connexion
         conn = pyodbc.connect(connection_string)
