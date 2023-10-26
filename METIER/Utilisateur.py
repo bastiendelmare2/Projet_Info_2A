@@ -18,4 +18,3 @@ class Utilisateur:
 
 
 # Exemple d'utilisation de la classe Utilisateur avec une liste de stations préférées
-
