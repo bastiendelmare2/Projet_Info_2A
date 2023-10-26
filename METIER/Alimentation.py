@@ -8,8 +8,8 @@ class alimentation:
     # Utiliser la commande suivante : pip install psycopg2
     def creation_base_donnees(self):
         conn = psycopg2.connect(
-            host="eleves.domensai.ecole:5432",
-            database="id2221",
+            host="sgbd-eleves.domensai.ecole",
+            database="projet_info",
             user="id2221",
             password="id2221",
         )
