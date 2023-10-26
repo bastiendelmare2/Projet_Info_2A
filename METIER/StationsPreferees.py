@@ -27,3 +27,6 @@ liste_stations_preferees = [
 stations_preferees = StationsPreferees(1, liste_stations_preferees, utilisateur)
 
 print(stations_preferees)
+
+
+
