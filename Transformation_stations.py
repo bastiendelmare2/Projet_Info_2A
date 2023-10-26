@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 from METIER.Horaires import Horaires
 from METIER.Services import Services
 from METIER.TypeCarburants import TypeCarburants
+from METIER.PrixCarburants import PrixCarburants
 from METIER.Coordonnees import Coordonnees
 from METIER.StationsServices import StationsServices
 
@@ -27,8 +28,9 @@ for pdv in root.findall("pdv"):
     carburants = []
     for prix_element in pdv.findall(".//prix"):
         nom = prix_element.get("nom")
+        typecarburants = TypeCarburants(nom)
         prix = float(prix_element.get("valeur"))
-        carburant = TypeCarburants(nom, prix)
+        carburant = PrixCarburants(type_carburant=typecarburants, prix=prix)
         carburants.append(carburant)
 
     # Horaires
@@ -52,7 +54,7 @@ for pdv in root.findall("pdv"):
         id_stations=identifiant,
         adresse=adresse,
         ville=ville,
-        typecarburants=carburants,
+        prixcarburants=carburants,
         horaires=horaires,
         coordonnees=coordonnees,
         services=services,
@@ -64,3 +66,25 @@ for pdv in root.findall("pdv"):
 
 for station in stations_service_list:
     print(station)
+
+# Supposons que 'liste_station_services' est votre liste d'objets StationServices
+
+# Ensemble pour stocker les types de carburants uniques
+types_carburants_uniques = set()
+
+# Parcourir chaque objet StationServices
+for station in stations_service_list:
+    # Accéder à la liste d'objets PrixCarburants
+    liste_prix_carburants = station.prixcarburants
+
+    # Parcourir chaque objet PrixCarburants et ajouter son TypeCarburants à l'ensemble
+    for prix_carburant in liste_prix_carburants:
+        type_carburant = prix_carburant.type_carburant
+        types_carburants_uniques.add(type_carburant)
+
+# Convertir l'ensemble en une liste (si nécessaire)
+types_carburants_liste = (list(types_carburants_uniques))
+
+# Maintenant, 'types_carburants_liste' contient la liste des types de carburants uniques
+for t in types_carburants_liste:
+    print(t)
