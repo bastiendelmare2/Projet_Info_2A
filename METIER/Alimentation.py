@@ -15,8 +15,8 @@ class alimentation:
 
     def connection_base(self):
     # Etape 1 : On récupère une connexion en utilisant la classe DBConnection.
-    with DBConnection().connection as connection :
-
+        with DBConnection().connection as connection :
+            
     # Etape 2 : à partir de la connexion on fait un curseur pour la requête 
 	    with connection.cursor() as cursor : 
     
