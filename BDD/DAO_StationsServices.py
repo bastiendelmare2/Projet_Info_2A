@@ -5,7 +5,7 @@ from METIER.StationsServices import StationsServices
 
 
 class StationsServices_Dao(metaclass=Singleton):
-    def ajouter_StationsServices(self, StationsServices : StationsServices) -> bool:
+    def ajouter_StationsServices(self, StationsServices: StationsServices) -> bool:
         """Ajout d'une Station Service dans la BDD 
 
         Parameters
@@ -52,7 +52,7 @@ class StationsServices_Dao(metaclass=Singleton):
         Returns
         -------
         StationsServices : StationsServices
-            
+
         """
         try:
             with DBConnection().connection as connection:
@@ -69,7 +69,6 @@ class StationsServices_Dao(metaclass=Singleton):
             raise
 
         return StationsServices
-
 
     def delete(self, Utilisateur) -> bool:
         """Deleting a user from the database
