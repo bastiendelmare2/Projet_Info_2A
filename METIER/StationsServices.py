@@ -1,27 +1,24 @@
-from TypeCarburants import TypeCarburants
-from PrixCarburants import PrixCarburants
-from Horaires import Horaires
-from Services import Services
-
-
 class StationsServices:
     def __init__(
         self,
-        id_station,
-        nom_station,
-        coordonnees_gps,
-        PrixCarburants,
-        Horaires,
-        Services,
+        id_stations,
+        adresse,
+        ville,
+        horaires,
+        services,
+        prixcarburants,
+        coordonnees,
     ):
-        self.id_station = id_station
-        self.nom_station = nom_station
-        self.coordonnees_gps = coordonnees_gps
-        self.PrixCarburants = PrixCarburants
-        self.Horaires = Horaires
-        self.services = Services
+        self.id_stations = id_stations
+        self.adresse = adresse
+        self.ville = ville
+        self.horaires = horaires
+        self.services = services
+        self.prixcarburants = prixcarburants
+        self.coordonnees = coordonnees
 
     def __str__(self):
+<<<<<<< HEAD
         return f"Station {self.id_station}: {self.nom_station}, Coordonnées GPS: {self.coordonnees_gps}"
 
 
@@ -39,3 +36,25 @@ station = StationsServices(
 print(station)
 
 
+=======
+        # Adresse et ville
+        adresse_ville = f"adresse: {self.adresse}, ville: {self.ville}"
+
+        # Horaires
+        horaires_str = "horaires: "
+        for jour in self.horaires.jours:
+            horaires_str += f"Jour: {jour['nom']}, Ouverture: {jour['ouverture']}, Fermeture: {jour['fermeture']} | "
+
+        # Services
+        services_str = "services: "
+        for service in self.services.services:
+            services_str += f"{service}, "
+
+        # Carburants
+        carburants_str = "carburants: "
+        for carburant in self.prixcarburants:
+            carburants_str += f"Nom: {carburant.type_carburant}, Prix: {carburant.prix} | "
+
+        # Retourne une chaîne formatée
+        return f"Station {self.id_stations}: {adresse_ville}, {horaires_str}, {services_str}, {carburants_str}"
+>>>>>>> aeacbe79734dfd628a13541208477f839d41be09
