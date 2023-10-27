@@ -25,7 +25,7 @@ class Coordonnees:
         >>> point1 = Coordonnees(52.5200, 13.4050) 
         >>> autre_coordonnee = Coordonnees(48.8566, 2.3522)
         >>> point1.calculer_distance(autre_coordonnee)
-        La distance entre les deux points est d'environ {distance:.2f} mètres.
+        La distance entre les deux points est d'environ 877463.33 mètres.
 
 
         """
@@ -48,6 +48,10 @@ class Coordonnees:
 
         return distance
 
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
 
 
 # Exemple d'utilisation
@@ -82,7 +86,7 @@ def calculer_distance(self, autre_coordonnee):
 
     return distance
 
-def trouver_station(self, position, nombre_station)
+def trouver_station(self, position, nombre_station):
     # Triez la liste des stations en fonction de leur distance par rapport à la position donnée
     stations_triees = sorted()
     calculer_distance(coordonnes, position)
