@@ -1,7 +1,5 @@
-#penser à installer pip install geopy
-import requests
+# penser à installer pip install geopy
 from geopy.geocoders import Nominatim
-import inquirer
 
 
 def transfo_adresse_GPS(adresse):
@@ -19,6 +17,6 @@ def transfo_adresse_GPS(adresse):
     longitude = location.longitude
 
     # Imprimez les coordonnées GPS
-    print(f"Coordonnées GPS - Latitude : {latitude}, Longitude : {longitude}")
+    return latitude,longitude
 
 transfo_adresse_GPS("51 rue Blaise Pascal, Bruz")
