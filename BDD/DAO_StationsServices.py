@@ -5,7 +5,7 @@ from METIER.StationsServices import StationsServices
 
 
 class StationsServices_Dao(metaclass=Singleton):
-    def ajouter_StationsServices(self, StationsServices: StationsServices) -> bool:
+    def ajouter_StationsServices(StationsServices: StationsServices) -> bool:
         """Ajout d'une Station Service dans la BDD 
 
         Parameters
@@ -23,7 +23,7 @@ class StationsServices_Dao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO Projet2A.StationsServices(id_stations, adresse, ville) VALUES "
+                        "INSERT INTO projet2a.StationsServices(id_stations, adresse, ville) VALUES "
                         "(%(id_stations)s, %(adresse)s, %(ville)s)               "
                         "  RETURNING id_stations;                                                       ",
                         {
@@ -70,7 +70,7 @@ class StationsServices_Dao(metaclass=Singleton):
 
         return StationsServices
 
-    def delete(self, Utilisateur) -> bool:
+    def delete(StationsServices) -> bool:
         """Deleting a user from the database
 
         Parameters
@@ -88,9 +88,9 @@ class StationsServices_Dao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     # Delete a user account
                     cursor.execute(
-                        "DELETE FROM Projet2A.StationsServices          "
+                        "DELETE FROM projet2a.StationsServices          "
                         " WHERE id_stations=%(id_stations)s      ",
-                        {"id_utilisateur": StationsServices.id_stations},
+                        {"id_stations": StationsServices.id_stations},
                     )
                     res = cursor.rowcount
         except Exception as e:
@@ -98,3 +98,5 @@ class StationsServices_Dao(metaclass=Singleton):
             raise
 
         return res > 0
+
+

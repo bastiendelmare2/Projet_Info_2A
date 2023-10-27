@@ -4,8 +4,8 @@ from utils.singleton import Singleton
 from METIER.TypeCarburants import TypeCarburants
 
 
-class UserDao(metaclass=Singleton):
-    def ajouter_typecarburants(self, TypesCarburants : TypeCarburants) -> bool:
+class TypeCarburants_Dao(metaclass=Singleton):
+    def ajouter_typecarburants(TypesCarburants : TypeCarburants) -> bool:
         """Creating a types_carburant in the database
 
         Parameters
@@ -25,7 +25,7 @@ class UserDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO Projet2A.TypesCaburants(nom) VALUES "
+                        "INSERT INTO projet2a.TypesCaburants(nom) VALUES "
                         "(%(nom)s)",
                         {
                             "nom": TypeCarburants.nom
@@ -41,7 +41,7 @@ class UserDao(metaclass=Singleton):
 
         return created
 
-    def trouver_par_id(self, id) -> TypeCarburants:
+    def trouver_par_id(id) -> TypeCarburants:
         """find a user by id
 
         Parameters
@@ -56,9 +56,9 @@ class UserDao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "SELECT *                           "
-                        "  FROM projet2A.TypesCarburants               "
+                        "  FROM projet2a.TypesCarburants               "
                         " WHERE id = %(id)s;  ",
-                        {"id_utilisateur": Utilisateur.id_utilisateur},
+                        {"id_typecarburant": TypeCarburants.id_utilisateur},
                     )
                     res = cursor.fetchone()
         except Exception as e:

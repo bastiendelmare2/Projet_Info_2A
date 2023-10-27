@@ -5,7 +5,7 @@ from METIER.Services import Services
 
 
 class Services_Dao(metaclass=Singleton):
-    def Services(self, Services: Services) -> bool:
+    def ajouter_services(Services: Services) -> bool:
         """Ajout d'une Station Service dans la BDD
 
         Parameters
@@ -23,7 +23,7 @@ class Services_Dao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO Projet2A.Services(services) VALUES "
+                        "INSERT INTO projet2a.Services(services) VALUES "
                         "(%(services)s)",
                         {
                             "services": Services.services,
@@ -39,7 +39,7 @@ class Services_Dao(metaclass=Singleton):
 
         return created
 
-    def trouver_par_id(self, id) -> Services:
+    def trouver_par_id(id) -> Services:
         """Touver une Stations Service par id
 
         Parameters
@@ -56,7 +56,7 @@ class Services_Dao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "SELECT *                           "
-                        "  FROM projet2A.StationsServices               "
+                        "  FROM projet2a.StationsServices               "
                         " WHERE id_stations = %(id_stations)s;  ",
                         {"id_stations": Services.id_services},
                     )
