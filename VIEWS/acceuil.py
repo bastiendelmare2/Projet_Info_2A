@@ -1,7 +1,10 @@
+#Avant il faut faire pip install inquirer
 import inquirer
 import requests
+#Avant il faut faire pip install geopy
 from geopy.geocoders import Nominatim
 from transfo_adresse_GPS import transfo_adresse_GPS
+
 
 class View:
     """Pour intégrargir avec le client"""    
@@ -19,19 +22,32 @@ class View:
         adresse=[
             inquirer.List('recherche',
                               message="Voulez-vous :",
-                              choices=["Entrer une adresse postale","Entrer des coordonnées GPS","Revenir à la Page d'acceuil"]
+                              choices=["Entrer une adresse postale","Entrer des coordonnées GPS","Revenir à la page d'accueil"]
                               ),
         ]
-        
-        if selected_option == "Entrer une adresse postale":
-            adresse=inquirer("Entrer l'adresse postale :")
-            coordonnees_GPS=transfo_adresse_GPS(adresse)
-            print(coordonnees_GPS)
+
+        answers = inquirer.prompt(adresse)
+        selected_option_recherche = answers['recherche']
+
+        if selected_option_recherche == "Entrer une adresse postale":
+            adresse_postale=input("Entrer l'adresse postale :")
+            coordonnees_GPS=transfo_adresse_GPS(adresse_postale)            
+
+        elif selected_option_recherche == "Entrer des coordonnées GPS":
+            latitude=input("Entrer la latitude : ")
+            longitude=input("Entrer la longitude : ")
+
+        elif selected_option_recherche == "Revenir à la page d'accueil":
+            print("rien")
     
     elif selected_option == "S'authentifier": 
-        print("rien")
+        identifiant=input("Entrer votre identifiant :")
+        mot_de_passe=input("Entrer votre mot de passe :")
 
     elif selected_option == "Créer un compte":
-        print("Vous avez sélectionné l'option 3.")
-        # Effectuez les actions liées à l'option 3 ici
+        identifiant=input("Entrer votre identifiant :")
+        prenom=input("Entrer votre prénom :")
+        nom=input("Entrer votre nom :")
+        mot_de_passe=input("Entrer votre mot de passe :")
+
 
