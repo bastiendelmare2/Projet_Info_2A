@@ -5,7 +5,7 @@ from METIER.TypeCarburants import TypeCarburants
 
 
 class UserDao(metaclass=Singleton):
-    def ajouter_typecarburants(self, TypesCArburants : TypeCarburants) -> bool:
+    def ajouter_typecarburants(self, TypesCarburants : TypeCarburants) -> bool:
         """Creating a types_carburant in the database
 
         Parameters

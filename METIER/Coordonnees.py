@@ -6,6 +6,28 @@ class Coordonnees:
         self.longitude = longitude
 
     def calculer_distance(self, autre_coordonnee):
+
+        """ Calcule la distance entre deux localisations, en fonction de leur coordonnées 
+        
+        Parameters
+        ----------
+        autre_coordonnee : Coordonnées
+                        Le point de la destination dont on veut calculer la distance
+
+        Returns
+        -------
+        float
+             La distance entre les deux localisations
+
+        Examples
+        --------
+
+        >>> point1 = Coordonnees(52.5200, 13.4050) 
+        >>> autre_coordonnee = Coordonnees(48.8566, 2.3522)
+        >>> point1.calculer_distance(autre_coordonnee)
+        877463.33
+        """
+    
         # Convertir les degrés en radians
         lat1 = math.radians(self.latitude)
         lon1 = math.radians(self.longitude)
@@ -22,7 +44,13 @@ class Coordonnees:
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         distance = rayon_terre * c
 
-        return distance
+        return round(distance, 2)
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+
 
 # Exemple d'utilisation
 point1 = Coordonnees(52.5200, 13.4050)

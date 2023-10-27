@@ -12,6 +12,12 @@ class StationsPreferees:
 
 
 
+<<<<<<< HEAD
+print(stations_preferees)
+
+
+
+=======
 
 
 
@@ -64,3 +70,4 @@ stations_preferees.supprimer_liste("Utilisateur1", "MaListe2")
 
 # Afficher les listes de chaque utilisateur
 print(stations_preferees)
+>>>>>>> aeacbe79734dfd628a13541208477f839d41be09
