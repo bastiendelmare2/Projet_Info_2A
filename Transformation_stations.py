@@ -64,23 +64,14 @@ for pdv in root.findall("pdv"):
     stations_service_list.append(station_service)
 
 
-for station in stations_service_list:
-    print(station)
+#for station in stations_service_list:
+#    print(station)
 
 # Alimenter la table Stations Services
-stations_service_info_list = []
-
-for station_service in stations_service_list:
-    station_info = {
-        "identifiant": station_service.id_stations,
-        "adresse": station_service.adresse,
-        "ville": station_service.ville
-    }
-    stations_service_info_list.append(station_info)
 
 # Affichez la liste des stations services avec uniquement l'identifiant, l'adresse et la ville
-for station_info in stations_service_info_list:
-    print(f"ID : {station_info['identifiant']}, Adresse : {station_info['adresse']}, Ville : {station_info['ville']}")
+#for station_info in stations_service_info_list:
+#   print(f"ID : {station_info['identifiant']}, Adresse : {station_info['adresse']}, Ville : {station_info['ville']}")
 
 
 # On alimente la table TypeCarburant
@@ -93,8 +84,20 @@ for station_service in stations_service_list:
 # Convertissez l'ensemble en une liste
 types_carburants_list = list(types_carburants)
 print("Types de carburants présents dans les stations services :")
-for carburant in types_carburants_list:
-    print(carburant)
+#for carburant in types_carburants_list:
+ #   print(carburant)
 
 # On alimente la table Prix Carburant
 
+
+#from BDD.DAO_StationsServices import StationsServices_Dao
+#station = StationsServices(id_stations=1, adresse="123 Main St", ville="Ville", horaires=[], services=[], prixcarburants= PrixCarburants(nom, 23), coordonnees=(21,12))
+
+#for stations in stations_service_list:
+#    StationsServices_Dao.ajouter_StationsServices(stations)
+
+from BDD.DAO_TypeCarburants import TypeCarburants_Dao
+for type_c in types_carburants_list:
+    print(type(type_c))
+
+    
