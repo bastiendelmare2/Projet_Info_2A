@@ -67,24 +67,34 @@ for pdv in root.findall("pdv"):
 for station in stations_service_list:
     print(station)
 
-# Supposons que 'liste_station_services' est votre liste d'objets StationServices
+# Alimenter la table Stations Services
+stations_service_info_list = []
 
-# Ensemble pour stocker les types de carburants uniques
-types_carburants_uniques = set()
+for station_service in stations_service_list:
+    station_info = {
+        "identifiant": station_service.id_stations,
+        "adresse": station_service.adresse,
+        "ville": station_service.ville
+    }
+    stations_service_info_list.append(station_info)
 
-# Parcourir chaque objet StationServices
-for station in stations_service_list:
-    # Accéder à la liste d'objets PrixCarburants
-    liste_prix_carburants = station.prixcarburants
+# Affichez la liste des stations services avec uniquement l'identifiant, l'adresse et la ville
+for station_info in stations_service_info_list:
+    print(f"ID : {station_info['identifiant']}, Adresse : {station_info['adresse']}, Ville : {station_info['ville']}")
 
-    # Parcourir chaque objet PrixCarburants et ajouter son TypeCarburants à l'ensemble
-    for prix_carburant in liste_prix_carburants:
-        type_carburant = prix_carburant.type_carburant
-        types_carburants_uniques.add(type_carburant)
 
-# Convertir l'ensemble en une liste (si nécessaire)
-types_carburants_liste = (list(types_carburants_uniques))
+# On alimente la table TypeCarburant
+types_carburants = set()
 
-# Maintenant, 'types_carburants_liste' contient la liste des types de carburants uniques
-for t in types_carburants_liste:
-    print(t)
+for station_service in stations_service_list:
+    for prix_carburant in station_service.prixcarburants:
+        types_carburants.add(prix_carburant.type_carburant.nom)
+
+# Convertissez l'ensemble en une liste
+types_carburants_list = list(types_carburants)
+print("Types de carburants présents dans les stations services :")
+for carburant in types_carburants_list:
+    print(carburant)
+
+# On alimente la table Prix Carburant
+

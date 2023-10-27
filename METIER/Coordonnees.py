@@ -25,9 +25,7 @@ class Coordonnees:
         >>> point1 = Coordonnees(52.5200, 13.4050) 
         >>> autre_coordonnee = Coordonnees(48.8566, 2.3522)
         >>> point1.calculer_distance(autre_coordonnee)
-        La distance entre les deux points est d'environ 877463.33 mètres.
-
-
+        877463.33
         """
     
         # Convertir les degrés en radians
@@ -46,7 +44,7 @@ class Coordonnees:
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         distance = rayon_terre * c
 
-        return distance
+        return round(distance, 2)
 
 
 if __name__ == "__main__":
