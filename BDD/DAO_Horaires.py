@@ -1,4 +1,4 @@
-from dao.db_connection import DBConnection
+from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
 
 from METIER.Horaires import Horaires
