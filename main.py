@@ -1,3 +1,5 @@
-# On importe les données XML
+from accueil2 import accueil
 
-XML()
+# Message d'accueil
+
+accueil()
