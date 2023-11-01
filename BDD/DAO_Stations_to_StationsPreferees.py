@@ -2,7 +2,7 @@ from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
 
 class StationsToStationsPrefereesDAO(metaclass=Singleton):
-    def associer_station_a_station_preferee(self, id_stations, id_stations_pref) -> bool:
+    def associer_station_a_station_preferee(id_stations, id_stations_pref) -> bool:
         """Associer une station de service à une station préférée dans la base de données
 
         Parameters
@@ -23,7 +23,7 @@ class StationsToStationsPrefereesDAO(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO Projet2A.Stations_to_StationsPreferees(id_stations, id_stations_pref) VALUES "
+                        "INSERT INTO projet2a.Stations_to_StationsPreferees(id_stations, id_stations_pref) VALUES "
                         "(%(id_stations)s, %(id_stations_pref)s);",
                         {
                             "id_stations": id_stations,
@@ -57,7 +57,7 @@ class StationsToStationsPrefereesDAO(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "DELETE FROM Projet2A.Stations_to_StationsPreferees "
+                        "DELETE FROM projet2a.Stations_to_StationsPreferees "
                         "WHERE id_stations = %(id_stations)s AND id_stations_pref = %(id_stations_pref)s;",
                         {
                             "id_stations": id_stations,
@@ -89,7 +89,7 @@ class StationsToStationsPrefereesDAO(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT id_stations FROM Projet2A.Stations_to_StationsPreferees WHERE id_stations_pref = %(id_stations_pref)s;",
+                        "SELECT id_stations FROM projet2a.Stations_to_StationsPreferees WHERE id_stations_pref = %(id_stations_pref)s;",
                         {
                             "id_stations": id_stations,
                         },
@@ -119,7 +119,7 @@ class StationsToStationsPrefereesDAO(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT id_stations_pref FROM Projet2A.Stations_to_StationsPreferees WHERE id_stations = %(id_stations)s;",
+                        "SELECT id_stations_pref FROM projet2a.Stations_to_StationsPreferees WHERE id_stations = %(id_stations)s;",
                         {
                             "id_stations_pref": id_stations_pref,
                         },

@@ -4,8 +4,8 @@ from utils.singleton import Singleton
 from METIER.Horaires import Horaires
 
 
-class Services_Dao(metaclass=Singleton):
-    def Services(self, Horaires: Horaires) -> bool:
+class Horaires_Dao(metaclass=Singleton):
+    def ajouter_horaires(id_horaires, horaires) -> bool:
         """Ajout d'une Station Service dans la BDD
 
         Parameters
@@ -17,27 +17,22 @@ class Services_Dao(metaclass=Singleton):
         created : bool
         """
 
-        res = None
 
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO Projet2A.Horaires(horaires) VALUES "
-                        "(%(horaires)s)",
+                        "INSERT INTO Projet2A.Horaires(id_horaires, horaires) VALUES "
+                        "(%(id_horaires)s, %(horaires)s)",
                         {
-                            "horaires": Horaires.horaires,
+                            "id_horaires" : id_horaires,
+                            "horaires": horaires,
                         },
                     )
-                    res = cursor.fetchone()
+                
         except Exception as e:
             print(e)
 
-        created = False
-        if res:
-            created = True
-
-        return created
 
     def trouver_par_id(self, id) -> Horaires:
         """Touver une Stations Service par id
@@ -60,7 +55,6 @@ class Services_Dao(metaclass=Singleton):
                         " WHERE id = %(id)s;  ",
                         {"id": Horaires.id},
                     )
-                    res = cursor.fetchone()
         except Exception as e:
             print(e)
             raise

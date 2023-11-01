@@ -1,11 +1,9 @@
 from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
 
-from METIER.Services import Services
-
 
 class Services_Dao(metaclass=Singleton):
-    def ajouter_services(Services: Services) -> bool:
+    def ajouter_services(id_service, nom_service) -> bool:
         """Ajout d'une Station Service dans la BDD
 
         Parameters
@@ -15,54 +13,29 @@ class Services_Dao(metaclass=Singleton):
         Returns
         -------
         created : bool
-        """
-
-        res = None
+        """,
 
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO projet2a.Services(services) VALUES "
-                        "(%(services)s)",
+                        "INSERT INTO projet2a.Services(id_service, nom_service) VALUES "
+                        "(%(id_service)s, %(nom_service)s);",
                         {
-                            "services": Services.services,
+                            "id_service": id_service,
+                            "nom_service": nom_service,
                         },
                     )
-                    res = cursor.fetchone()
         except Exception as e:
             print(e)
 
-        created = False
-        if res:
-            created = True
-
-        return created
-
-    def trouver_par_id(id) -> Services:
-        """Touver une Stations Service par id
-
-        Parameters
-        ----------
-        id : int
-
-        Returns
-        -------
-        StationsServices : StationsServices
-
-        """
+        
+    def reset_table():
+        """Réinitialise la table Services en supprimant toutes les données"""
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT *                           "
-                        "  FROM projet2a.StationsServices               "
-                        " WHERE id_stations = %(id_stations)s;  ",
-                        {"id_stations": Services.id_services},
-                    )
-                    res = cursor.fetchone()
+                    cursor.execute("DELETE FROM projet2a.Services;")
         except Exception as e:
             print(e)
-            raise
 
-        return Services

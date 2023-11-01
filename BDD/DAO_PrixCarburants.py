@@ -4,7 +4,7 @@ from utils.singleton import Singleton
 from METIER.PrixCarburants import PrixCarburants
 
 class PrixCarburantsDAO(metaclass=Singleton):
-    def ajouter_prix_carburant(self, type_carburant_id, station_service_id, prix):
+    def ajouter_prix_carburant(id_type_carburant, id_stations, prix):
         """Ajouter un prix de carburant dans la base de données
 
         Parameters
@@ -27,11 +27,11 @@ class PrixCarburantsDAO(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO Projet2A.PrixCarburants(id_type_carburant, station_service_id, prix) VALUES "
+                        "INSERT INTO Projet2A.PrixCarburants(id_type_carburant, id_stations, prix) VALUES "
                         "(%(id_type_carburant)s, %(id_stations)s, %(prix)s);",
                         {
-                            "type_carburant_id": type_carburant_id,
-                            "station_service_id": station_service_id,
+                            "id_type_carburant": id_type_carburant,
+                            "id_stations": id_stations,
                             "prix": prix,
                         },
                     )

@@ -27,7 +27,7 @@ for service_element in root.findall(".//services/service"):
 
 # Affichez la liste des objets Services
 for service in services_list:
-    print(type(service))
+    print(type(service)),
 
 from BDD.DAO_Services import Services_Dao
 for service in services_list:
