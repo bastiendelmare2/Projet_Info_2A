@@ -99,4 +99,60 @@ class StationsServices_Dao(metaclass=Singleton):
 
         return res > 0
 
+    def filtre_stations_by_carburant(nom_type_carburant):
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        SELECT ss.id_stations, ss.adresse, ss.ville, tc.nom_type_carburants, pc.prix
+                        FROM projet2a.StationsServices ss
+                        JOIN projet2a.PrixCarburants pc ON ss.id_stations = pc.id_stations
+                        JOIN projet2a.TypeCarburants tc ON pc.id_type_carburant = tc.id_typecarburants
+                        WHERE tc.nom_type_carburants = %(nom_type_carburant)s
+                    """, {"nom_type_carburant": nom_type_carburant})
 
+                    # Récupérer les résultats
+                    stations = cursor.fetchall()
+
+            return stations
+        except Exception as e:
+            print("Erreur lors de la récupération des stations-services :", e)
+            return []
+
+
+    def filtre_stations(nom_type_carburant=None, nom_service=None):
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    query = """
+                        SELECT ss.id_stations, ss.adresse, ss.ville, tc.nom_type_carburants, pc.prix, s.nom_service
+                        FROM projet2a.StationsServices ss
+                        JOIN projet2a.PrixCarburants pc ON ss.id_stations = pc.id_stations
+                        JOIN projet2a.TypeCarburants tc ON pc.id_type_carburant = tc.id_typecarburants
+                        LEFT JOIN projet2a.Stations_to_Services sts ON ss.id_stations = sts.id_stations
+                        LEFT JOIN projet2a.Services s ON sts.id_service = s.id_service
+                    """
+
+                    conditions = []
+                    params = {}
+
+                    if nom_type_carburant:
+                        conditions.append("tc.nom_type_carburants = %(nom_type_carburant)s")
+                        params["nom_type_carburant"] = nom_type_carburant
+
+                    if nom_service:
+                        conditions.append("s.nom_service = %(nom_service)s")
+                        params["nom_service"] = nom_service
+
+                    if conditions:
+                        query += " WHERE " + " AND ".join(conditions)
+
+                    cursor.execute(query, params)
+
+                    # Récupérer les résultats
+                    stations = cursor.fetchall()
+
+            return stations
+        except Exception as e:
+            print("Erreur lors de la récupération des stations-services :", e)
+            return []
