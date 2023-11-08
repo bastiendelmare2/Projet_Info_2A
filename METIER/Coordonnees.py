@@ -5,7 +5,7 @@ class Coordonnees:
         self.latitude = latitude
         self.longitude = longitude
 
-    def calculer_distance(self, autre_coordonnee):
+    def calculer_distance(x, y, a, b):
 
         """ Calcule la distance entre deux localisations, en fonction de leur coordonnées 
         
@@ -29,10 +29,10 @@ class Coordonnees:
         """
     
         # Convertir les degrés en radians
-        lat1 = math.radians(self.latitude)
-        lon1 = math.radians(self.longitude)
-        lat2 = math.radians(autre_coordonnee.latitude)
-        lon2 = math.radians(autre_coordonnee.longitude)
+        lon1 = math.radians(x)
+        lat1 = math.radians(y)
+        lon2 = math.radians(a)
+        lat2 = math.radians(b)
 
         # Rayon de la Terre en mètres
         rayon_terre = 6371.0 * 1000  # en mètres
@@ -46,15 +46,3 @@ class Coordonnees:
 
         return round(distance, 2)
 
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
-
-
-# Exemple d'utilisation
-point1 = Coordonnees(52.5200, 13.4050)
-point2 = Coordonnees(48.8566, 2.3522)
-
-distance = point1.calculer_distance(point2)
-print(f"La distance entre les deux points est d'environ {distance:.2f} mètres.")

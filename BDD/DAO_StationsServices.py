@@ -1,3 +1,4 @@
+import pandas as pd
 from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
 
@@ -125,12 +126,13 @@ class StationsServices_Dao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     query = """
-                        SELECT ss.id_stations, ss.adresse, ss.ville, tc.nom_type_carburants, pc.prix, s.nom_service
+                        SELECT ss.id_stations, ss.adresse, ss.ville, tc.nom_type_carburants, pc.prix, s.nom_service, co.longitude, co.latitude
                         FROM projet2a.StationsServices ss
                         JOIN projet2a.PrixCarburants pc ON ss.id_stations = pc.id_stations
                         JOIN projet2a.TypeCarburants tc ON pc.id_type_carburant = tc.id_typecarburants
                         LEFT JOIN projet2a.Stations_to_Services sts ON ss.id_stations = sts.id_stations
                         LEFT JOIN projet2a.Services s ON sts.id_service = s.id_service
+                        LEFT JOIN projet2a.Coordonnees co ON ss.id_stations = co.id_stations
                     """
 
                     conditions = []
@@ -151,8 +153,10 @@ class StationsServices_Dao(metaclass=Singleton):
 
                     # Récupérer les résultats
                     stations = cursor.fetchall()
+                    stations = pd.DataFrame(stations)
 
             return stations
         except Exception as e:
             print("Erreur lors de la récupération des stations-services :", e)
             return []
+
