@@ -1,8 +1,8 @@
 from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
 
-class StationsServices_Dao(metaclass=Singleton):
-    def ajouter_StationsServices(id_stations_pref, id_utilisateur) -> bool:
+class StationsPreferees_Dao(metaclass=Singleton):
+    def ajouter_StationsPreferee(id_stations_pref, id_compte, nom) -> bool:
         """Ajout d'une Station Service dans la BDD 
 
         Parameters
@@ -20,12 +20,13 @@ class StationsServices_Dao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO projet2a.StationsPreferees(id_stations_pref, id_utilisateur) VALUES "
-                        "(%(id_stations_pref)s, %(id_utilisateur)s)               "
+                        "INSERT INTO projet2a.StationsPreferees(id_stations_pref, id_compte, nom) VALUES "
+                        "(%(id_stations_pref)s, %(id_compte)s, %(nom)s)               "
                         "  RETURNING id_stations_pref;                                                       ",
                         {
                             "id_stations": id_stations_pref,
-                            "liste_stations": id_utilisateur
+                            "liste_stations": id_compte,
+                            "nom": nom
                         },
                     )
                     res = cursor.fetchone()
@@ -37,31 +38,6 @@ class StationsServices_Dao(metaclass=Singleton):
             created = True
 
         return created
-
-    def trouver_par_id(self, id) : 
-        """Touver une STations Service par id
-
-        Parameters
-        ----------
-        id : int
-
-        Returns
-        -------
-        StationsServices : StationsServices
-
-        """
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT *                           "
-                        "  FROM projet2a.StationsPreferees               "
-                        " WHERE id_stations_pref = %(id_stations_pref)s;  ",
-                        {"id_stations_pref": id_stations_pref},
-                    )
-                    res = cursor.fetchone()
-        except Exception as e:
-            print(e)
 
     def delete(id_stations_pref) -> bool:
         """Deleting a user from the database

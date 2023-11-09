@@ -1,8 +1,8 @@
 class ComptesUtilisateurs:
-    def __init__(self, id_compte , mot_de_passe, identifiant ):
+    def __init__(self, id_compte, mot_de_passe, identifiant):
         self.id_compte = id_compte
         self.mot_de_passe = mot_de_passe
-        self.identifiant= identifiant
+        self.identifiant = identifiant
 
 
 "Methodes de cette classe a adapter quand les tables seront creer, selon la facon dont les tables sont configurés"
