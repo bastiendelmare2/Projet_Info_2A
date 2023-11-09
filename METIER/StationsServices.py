@@ -39,4 +39,6 @@ class StationsServices:
         # Retourne une chaîne formatée
         return f"Station {self.id_stations}: {adresse_ville}, {horaires_str}, {services_str}, {carburants_str}"
 
+    
+
         

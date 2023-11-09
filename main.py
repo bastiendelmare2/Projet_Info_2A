@@ -14,8 +14,6 @@ def add_distance_column(dataframe, ref_latitude, ref_longitude, n):
     dataframe = dataframe.sort_values(by='prix', ascending=True)
     dataframe = dataframe.head(n)
 
-    end_time = datetime.now()  # Heure de fin d'exécution
-
     result_dict = {
         "parameters": {
             "ref_latitude": ref_latitude,
