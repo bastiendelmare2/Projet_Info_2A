@@ -1,3 +1,5 @@
+import bcrypt
+import binascii
 from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
 from METIER.ComptesUtilisateurs import ComptesUtilisateurs
@@ -31,23 +33,33 @@ class Compte_User_DAO(metaclass=Singleton):
         return created
 
     @staticmethod
-    def supprimer_compte_utilisateur(id_compte_utilisateur: int) -> bool:
-        """Suppression d'un compte_utilisateur dans la base de données."""
-        res = None
-
+    def verifier_connexion(identifiant: str, mot_de_passe: str) -> bool:
+        """Vérification des informations de connexion d'un utilisateur."""
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
+                    # Récupérer le mot de passe haché depuis la base de données
                     cursor.execute(
-                        "DELETE FROM Projet2A.compteutilisateur WHERE id_compte = %(id_compte)s;",
-                        {"id_compte": id_compte_utilisateur},
+                        "SELECT mdp FROM Projet2A.compteutilisateur WHERE identifiant = %(identifiant)s;",
+                        {"identifiant": identifiant},
                     )
-                    res = cursor.fetchone()
+                    hashed_password = cursor.fetchone()
+
+                    # Vérifier si le mot de passe entré correspond au mot de passe stocké
+                    if hashed_password:
+                        hashed_password_str = hashed_password['mdp']
+
+                        # Convertir le format hexadécimal en une chaîne binaire
+                        hashed_password_bin = binascii.unhexlify(hashed_password_str[2:]) 
+
+                        return bcrypt.checkpw(mot_de_passe.encode('utf-8'), hashed_password_bin)
         except Exception as e:
             print(e)
 
-        deleted = False
-        if res:
-            deleted = True
+        return False
 
-        return deleted
+
+
+
+
+
