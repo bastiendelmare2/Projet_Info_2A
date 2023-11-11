@@ -36,7 +36,7 @@ class StationsToStationsPrefereesDAO(metaclass=Singleton):
 
         return created
 
-    def dissocier_station_de_station_preferee(self, id_stations, id_stations_pref) -> bool:
+    def dissocier_station_de_station_preferee(id_stations, id_stations_pref) -> bool:
         """Dissocier une station de service d'une station préférée dans la base de données
 
         Parameters
@@ -70,62 +70,3 @@ class StationsToStationsPrefereesDAO(metaclass=Singleton):
 
         return deleted
 
-    def stations_service_de_station_preferee(self, sid_stations_pref):
-        """Trouver les stations de service associées à une station préférée
-
-        Parameters
-        ----------
-        station_preferee_id : int
-            ID de la station préférée
-
-        Returns
-        -------
-        stations_service : list
-            Liste des ID des stations de service associées à la station préférée
-        """
-        stations_service = []
-
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT id_stations FROM projet2a.Stations_to_StationsPreferees WHERE id_stations_pref = %(id_stations_pref)s;",
-                        {
-                            "id_stations": id_stations,
-                        },
-                    )
-                    stations_service = [row[0] for row in cursor.fetchall()]
-        except Exception as e:
-            print(e)
-
-        return stations_service
-
-    def stations_preferees_de_station_service(self, id_stations):
-        """Trouver les stations préférées associées à une station de service
-
-        Parameters
-        ----------
-        station_service_id : int
-            ID de la station de service
-
-        Returns
-        -------
-        stations_preferees : list
-            Liste des ID des stations préférées associées à la station de service
-        """
-        stations_preferees = []
-
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT id_stations_pref FROM projet2a.Stations_to_StationsPreferees WHERE id_stations = %(id_stations)s;",
-                        {
-                            "id_stations_pref": id_stations_pref,
-                        },
-                    )
-                    stations_preferees = [row[0] for row in cursor.fetchall()]
-        except Exception as e:
-            print(e)
-
-        return stations_preferees

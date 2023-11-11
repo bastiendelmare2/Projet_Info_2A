@@ -77,8 +77,11 @@ class Alimentation:
                     types_carburants_dict[nom_carburant] = next_carburant_id
                     next_carburant_id += 1
 
-        for i, nom_typecarburant in enumerate(types_carburants_dict):
-            TypeCarburantDao.ajouter_TypeCarburant(id_typecarburants=i + 1, nom_type_carburants=nom_typecarburant)
+        # Ajouter les types de carburants à la table des TypeCarburants
+        for nom_typecarburant, id_typecarburant in types_carburants_dict.items():
+            TypeCarburantDao.ajouter_TypeCarburant(id_typecarburants=id_typecarburant, nom_type_carburants=nom_typecarburant)
+
+        return types_carburants_dict
 
     @staticmethod
     def alimenter_table_prix_carburant(stations_service_list, types_carburants_dict):
@@ -95,8 +98,10 @@ class Alimentation:
                     key = (id_station, id_typecarburant)
                     prix_carburants_dict[key] = prix
 
+        # Ajouter les prix des carburants à la table des PrixCarburants
         for prix in prix_carburants_dict:
             PrixCarburantsDAO.ajouter_prix_carburant(id_type_carburant=prix[1], id_stations=prix[0], prix=prix_carburants_dict[prix])
+
 
     @staticmethod
     def alimenter_table_services(stations_service_list):
@@ -112,8 +117,15 @@ class Alimentation:
         for service in services_dict:
             Services_Dao.ajouter_services(id_service=services_dict[service], nom_service=service)
 
+        return services_dict
+
     @staticmethod
     def alimenter_table_stations_to_services(stations_service_list, services_dict):
+        if services_dict is None:
+            # Gérer le cas où services_dict est None (pas correctement initialisé)
+            print("Erreur: services_dict est None.")
+            return
+
         stations_to_services_dict = {}
 
         for station_service in stations_service_list:
@@ -121,8 +133,9 @@ class Alimentation:
             service_ids = []
 
             for service_name in station_service.services.services:
-                if service_name in services_dict:
-                    service_id = services_dict[service_name]
+                # Utiliser services_dict.get pour gérer le cas où le service n'est pas dans le dictionnaire
+                service_id = services_dict.get(service_name)
+                if service_id is not None:
                     service_ids.append(service_id)
 
             stations_to_services_dict[station_id] = service_ids
@@ -180,3 +193,30 @@ class Alimentation:
 
         for service in services_list:
             Services_Dao.ajouter_services(service)
+
+
+    @staticmethod
+    def alimenter_toutes_tables(chemin_xml):
+        # Lire le fichier XML
+        stations_service_list = Alimentation.lire_fichier_xml(chemin_xml)
+
+        # Alimenter la table des StationsServices
+        Alimentation.alimenter_table_stations_services(stations_service_list)
+
+        # Alimenter la table des TypeCarburants
+        types_carburants_dict = Alimentation.alimenter_table_type_carburant(stations_service_list)
+
+        # Alimenter la table des PrixCarburants
+        Alimentation.alimenter_table_prix_carburant(stations_service_list, types_carburants_dict)
+
+        # Alimenter la table des Services
+        services_dict = Alimentation.alimenter_table_services(stations_service_list)
+
+        # Alimenter la table des Stations_to_Services
+        Alimentation.alimenter_table_stations_to_services(stations_service_list, services_dict)
+
+        # Alimenter la table des Coordonnees
+        Alimentation.alimenter_table_coordonnees(stations_service_list)
+
+        # Alimenter la table des Horaires
+        Alimentation.alimenter_table_horaires(stations_service_list)

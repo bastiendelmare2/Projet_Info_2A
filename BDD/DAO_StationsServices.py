@@ -1,4 +1,5 @@
 import pandas as pd
+import json
 from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
 
@@ -160,3 +161,55 @@ class StationsServices_Dao(metaclass=Singleton):
             print("Erreur lors de la récupération des stations-services :", e)
             return []
 
+    def stations_services_prix_par_station_preferee(self, id_stations_pref):
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        SELECT ss.id_stations, ss.adresse, ss.ville,
+                               tc.nom_type_carburants, pc.prix,
+                               s.nom_service, co.longitude, co.latitude
+                        FROM projet2a.Stations_to_StationsPreferees stsp
+                        JOIN projet2a.StationsServices ss ON stsp.id_stations = ss.id_stations
+                        LEFT JOIN projet2a.PrixCarburants pc ON ss.id_stations = pc.id_stations
+                        LEFT JOIN projet2a.TypeCarburants tc ON pc.id_type_carburant = tc.id_typecarburants
+                        LEFT JOIN projet2a.Stations_to_Services sts ON ss.id_stations = sts.id_stations
+                        LEFT JOIN projet2a.Services s ON sts.id_service = s.id_service
+                        LEFT JOIN projet2a.Coordonnees co ON ss.id_stations = co.id_stations
+                        WHERE stsp.id_stations_pref = %(id_stations_pref)s
+                    """, {"id_stations_pref": id_stations_pref})
+
+                    # Récupérer les résultats
+                    stations_services_prix = cursor.fetchall()
+
+            # Créer un dictionnaire pour stocker les résultats
+            result_dict = {}
+            for row in stations_services_prix:
+                station_id = row["id_stations"]
+                if station_id not in result_dict:
+                    result_dict[station_id] = {
+                        "id_stations": row["id_stations"],
+                        "adresse": row["adresse"],
+                        "ville": row["ville"],
+                        "services": set(),  # Utiliser un ensemble pour éliminer les doublons
+                        "prix_carburants": set()  # Utiliser un ensemble pour éliminer les doublons
+                    }
+
+                # Ajouter les services si présents
+                if row["nom_service"]:
+                    result_dict[station_id]["services"].add(row["nom_service"])
+
+                # Ajouter les prix du carburant si présents
+                if row["nom_type_carburants"] and row["prix"] is not None:
+                    result_dict[station_id]["prix_carburants"].add((
+                        row["nom_type_carburants"],
+                        row["prix"]
+                    ))
+
+            # Convertir le résultat en JSON
+            result_json = json.dumps(list(result_dict.values()), indent=2, default=list)
+
+            return result_json
+        except Exception as e:
+            print("Erreur lors de la récupération des stations-services et des prix de carburant :", e)
+            return json.dumps({"error": str(e)})
