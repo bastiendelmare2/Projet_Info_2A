@@ -1,3 +1,0 @@
-from BDD.DAO_Reset_Tables import SuppressionDonnees
-SuppressionDonnees.supprimer_donnees_tables()
-
