@@ -1,6 +1,7 @@
 from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
 
+
 class StationsToStationsPrefereesDAO(metaclass=Singleton):
     def associer_station_a_station_preferee(id_stations, id_stations_pref) -> bool:
         """Associer une station de service à une station préférée dans la base de données
