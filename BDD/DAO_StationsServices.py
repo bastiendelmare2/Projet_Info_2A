@@ -1,5 +1,7 @@
 import pandas as pd
 import json
+from datetime import datetime
+from METIER.Coordonnees import Coordonnees
 from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
 
@@ -100,34 +102,14 @@ class StationsServices_Dao(metaclass=Singleton):
             raise
 
         return res > 0
-
-    def filtre_stations_by_carburant(nom_type_carburant):
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute("""
-                        SELECT ss.id_stations, ss.adresse, ss.ville, tc.nom_type_carburants, pc.prix
-                        FROM projet2a.StationsServices ss
-                        JOIN projet2a.PrixCarburants pc ON ss.id_stations = pc.id_stations
-                        JOIN projet2a.TypeCarburants tc ON pc.id_type_carburant = tc.id_typecarburants
-                        WHERE tc.nom_type_carburants = %(nom_type_carburant)s
-                    """, {"nom_type_carburant": nom_type_carburant})
-
-                    # Récupérer les résultats
-                    stations = cursor.fetchall()
-
-            return stations
-        except Exception as e:
-            print("Erreur lors de la récupération des stations-services :", e)
-            return []
-
-
+    
     def filtre_stations(nom_type_carburant=None, nom_service=None):
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     query = """
-                        SELECT ss.id_stations, ss.adresse, ss.ville, tc.nom_type_carburants, pc.prix, s.nom_service, co.longitude, co.latitude
+                        SELECT ss.id_stations, ss.adresse, ss.ville, tc.nom_type_carburants, pc.prix, 
+                        ARRAY_TO_STRING(ARRAY_AGG(s.nom_service), ', ') as nom_service, co.longitude, co.latitude
                         FROM projet2a.StationsServices ss
                         JOIN projet2a.PrixCarburants pc ON ss.id_stations = pc.id_stations
                         JOIN projet2a.TypeCarburants tc ON pc.id_type_carburant = tc.id_typecarburants
@@ -150,6 +132,8 @@ class StationsServices_Dao(metaclass=Singleton):
                     if conditions:
                         query += " WHERE " + " AND ".join(conditions)
 
+                    query += " GROUP BY ss.id_stations, ss.adresse, ss.ville, tc.nom_type_carburants, pc.prix, co.longitude, co.latitude"
+
                     cursor.execute(query, params)
 
                     # Récupérer les résultats
@@ -157,9 +141,34 @@ class StationsServices_Dao(metaclass=Singleton):
                     stations = pd.DataFrame(stations)
 
             return stations
+
         except Exception as e:
             print("Erreur lors de la récupération des stations-services :", e)
             return []
+
+
+    def trouver_stations(dataframe, ref_latitude, ref_longitude, n):
+        start_time = datetime.now()  # Heure d'exécution
+
+        dataframe['distance'] = dataframe.apply(lambda row: Coordonnees.calculer_distance(ref_latitude, ref_longitude, row['latitude'], row['longitude']), axis=1)
+        dataframe = dataframe.sort_values(by='distance', ascending=True)
+        dataframe = dataframe.sort_values(by='prix', ascending=True)
+        dataframe = dataframe.head(n)
+
+        # Enlever les doublons basés sur 'latitude' et 'longitude'
+        dataframe = dataframe.drop_duplicates(subset=['latitude', 'longitude'])
+
+        result_dict = {
+            "parameters": {
+                "position (longitude, latitude)": (ref_longitude, ref_latitude),
+                "nombre de stations": n
+            },
+            "execution_time": start_time.strftime("%Y-%m-%d %H:%M:%S"),
+            "data": dataframe.to_dict(orient='records')
+        }
+        result_dict = json.dumps(result_dict, indent=4)
+
+        return result_dict
 
     def stations_services_prix_par_station_preferee(self, id_stations_pref):
         try:
