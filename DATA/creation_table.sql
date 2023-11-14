@@ -1,26 +1,10 @@
-CREATE SCHEMA projet2a
-
-
-----------------------------------------------------------------------
----  UTILISATEUR ---
-----------------------------------------------------------------------
-DROP TABLE IF EXISTS projet2a.Utilisateur
-
-CREATE TABLE projet2a.Utilisateur (
-    id_utilisateur SERIAL PRIMARY KEY,
-    nom_utilisateur VARCHAR(255) NOT NULL,
-    prenom_utilisateur VARCHAR(255) NOT NULL,
-    age INT,
-    mdp_utilisateur VARCHAR(255) NOT NULL
-);
-
 ----------------------------------------------------------------------
 ---  STATIONSSERVICES ---
 ----------------------------------------------------------------------
-DROP TABLE IF EXISTS projet2a.StationsServices
+DROP TABLE IF EXISTS projet2a.StationsServices CASCADE
 
 CREATE TABLE projet2a.StationsServices (
-    id_stations VARCHAR(255) PRIMARY KEY,
+    id_stations INT PRIMARY KEY,
     adresse VARCHAR(255) NOT NULL,
     ville VARCHAR(255) NOT NULL
 );
@@ -29,10 +13,10 @@ CREATE TABLE projet2a.StationsServices (
 ----------------------------------------------------------------------
 ---  TYPECARBURANTS ---
 ----------------------------------------------------------------------
-DROP TABLE IF EXISTS projet2a.TypeCarburants
+DROP TABLE IF EXISTS projet2a.TypeCarburants CASCADE
 
 CREATE TABLE projet2a.TypeCarburants (
-    id_typecarburants SERIAL PRIMARY KEY,
+    id_typecarburants INT PRIMARY KEY,
     nom_type_carburants VARCHAR(255) NOT NULL
 );
 
@@ -40,7 +24,7 @@ CREATE TABLE projet2a.TypeCarburants (
 ---  COMPTEUTILISATEUR ---
 ----------------------------------------------------------------------
 
-DROP TABLE IF EXISTS projet2a.CompteUtilisateur
+DROP TABLE IF EXISTS projet2a.CompteUtilisateur CASCADE
 
 CREATE TABLE projet2a.CompteUtilisateur (
     id_compte SERIAL PRIMARY KEY,
@@ -56,13 +40,14 @@ CREATE TABLE projet2a.CompteUtilisateur (
 DROP TABLE IF EXISTS projet2a.PrixCarburants
 
 CREATE TABLE projet2a.PrixCarburants (
-    id_prix SERIAL PRIMARY KEY,
-    station_id VARCHAR(255) NOT NULL,
-    typecarburant_id INT NOT NULL,
-    prix FLOAT NOT NULL,
-    FOREIGN KEY (station_id) REFERENCES projet2a.StationsServices(id_stations),
-    FOREIGN KEY (typecarburant_id) REFERENCES projet2a.TypeCarburants(id_typecarburants)
+    id_type_carburant INT,
+    id_stations INT,
+    prix FLOAT,
+    FOREIGN KEY (id_stations) REFERENCES projet2a.StationsServices(id_stations),
+    FOREIGN KEY (id_type_carburant) REFERENCES projet2a.TypeCarburants(id_typecarburants),
+    PRIMARY KEY (id_type_carburant, id_stations)
 );
+
 
 ----------------------------------------------------------------------
 ---  SERVICES ---
@@ -70,10 +55,21 @@ CREATE TABLE projet2a.PrixCarburants (
 DROP TABLE IF EXISTS projet2a.Services
 
 CREATE TABLE projet2a.Services (
-    id_services SERIAL PRIMARY KEY,
-    nom_services VARCHAR(255) NOT NULL,
-    id_stations VARCHAR(255) NOT NULL,
-    FOREIGN KEY (id_stations) REFERENCES projet2a.StationsServices(id_stations)
+    id_service INT PRIMARY KEY,
+    nom_service VARCHAR(255) NOT NULL
+);
+
+----------------------------------------------------------------------
+---  STATIONS_TO_SERVICES ---
+----------------------------------------------------------------------
+DROP TABLE IF EXISTS projet2a.Stations_to_Services
+
+CREATE TABLE projet2a.Stations_to_Services (
+    id_stations INT,
+    id_service INT,
+    FOREIGN KEY (id_stations) REFERENCES projet2a.StationsServices(id_stations),
+    FOREIGN KEY (id_service) REFERENCES projet2a.Services(id_service),
+    PRIMARY KEY (id_stations, id_service)
 );
 
 
@@ -83,9 +79,8 @@ CREATE TABLE projet2a.Services (
 DROP TABLE IF EXISTS projet2a.Horaires
 
 CREATE TABLE projet2a.Horaires (
-    id_stations VARCHAR(255) NOT NULL,
-    horaire TIME NOT NULL,
-    FOREIGN KEY (id_stations) REFERENCES projet2a.StationsServices(id_stations)
+    id_horaires INT PRIMARY KEY,
+    horaires VARCHAR(255)
 );
 
 ----------------------------------------------------------------------
@@ -94,9 +89,9 @@ CREATE TABLE projet2a.Horaires (
 DROP TABLE IF EXISTS projet2a.Coordonnees
 
 CREATE TABLE projet2a.Coordonnees (
-    id_stations VARCHAR(255) NOT NULL,
-    longitude DECIMAL(10, 6) NOT NULL,
-    latitude DECIMAL(10, 6) NOT NULL,
+    id_stations INT NOT NULL,
+    longitude FLOAT NOT NULL,
+    latitude FLOAT NOT NULL,
     FOREIGN KEY (id_stations) REFERENCES projet2a.StationsServices(id_stations)
 );
 
@@ -106,10 +101,11 @@ CREATE TABLE projet2a.Coordonnees (
 DROP TABLE IF EXISTS projet2a.Stations_to_StationsPreferees
 
 CREATE TABLE projet2a.Stations_to_StationsPreferees (
-    id_stations VARCHAR(255) NOT NULL,
-    id_stations_pref VARCHAR(255),
-    FOREIGN KEY (id_stations) REFERENCES projet2a.StationsServices(id_stations)
+    id_stations INT NOT NULL,
+    id_stations_pref INT,
+    PRIMARY KEY (id_stations, id_stations_pref)
 );
+
 
 ----------------------------------------------------------------------
 ---  STATIONSPREFEREES ---
@@ -117,9 +113,10 @@ CREATE TABLE projet2a.Stations_to_StationsPreferees (
 DROP TABLE IF EXISTS projet2a.StationsPreferees
 
 CREATE TABLE projet2a.StationsPreferees (
-    id_stations_pref SERIAL PRIMARY KEY,
-    id_utilisateur INT NOT NULL,
-    FOREIGN KEY (id_utilisateur) REFERENCES projet2a.Utilisateur(id_utilisateur)
+    id_stations_pref INT primary KEY,
+    id_compte INT NOT NULL,
+    nom VARCHAR (255) NOT null,
+    FOREIGN KEY (id_compte) REFERENCES projet2a.CompteUtilisateur(id_compte)
 );
 
 
