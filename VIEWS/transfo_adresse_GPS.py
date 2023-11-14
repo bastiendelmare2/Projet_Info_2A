@@ -19,4 +19,4 @@ def transfo_adresse_GPS(adresse):
     # Imprimez les coordonnées GPS
     return latitude,longitude
 
-transfo_adresse_GPS("51 rue Blaise Pascal, Bruz")
+print(transfo_adresse_GPS("51 rue Blaise Pascal, Bruz"))

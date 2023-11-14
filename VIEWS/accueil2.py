@@ -48,3 +48,5 @@ def faire_une_recherche():
 
     elif selected_option_recherche == "Revenir à la page d'accueil":
         print("rien")
+
+accueil()
