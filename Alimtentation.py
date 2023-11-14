@@ -156,8 +156,8 @@ class Alimentation:
             station_coordinates_dict[station_id] = {"latitude": latitude, "longitude": longitude}
 
         for station_id, coordinates in station_coordinates_dict.items():
-            latitude = round(float(coordinates['latitude']), 1)
-            longitude = round(float(coordinates['longitude']), 1)
+            latitude = round(float(coordinates['latitude']), 6)
+            longitude = round(float(coordinates['longitude']), 6)
             Coordonnees_Dao.ajouter_coordonnees(id_stations=station_id, latitude=latitude, longitude=longitude)
 
     @staticmethod
