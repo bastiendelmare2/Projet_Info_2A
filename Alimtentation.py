@@ -27,7 +27,7 @@ class Alimentation:
             ville = pdv.find("ville").text
             latitude = pdv.get("latitude")
             longitude = pdv.get("longitude")
-            coordonnees = Coordonnees(latitude, longitude)
+            coordonnees = Coordonnees("{:.6e}".format(float(latitude) / 100000), "{:.6e}".format(float(longitude) / 100000))
             carburants = []
             for prix_element in pdv.findall(".//prix"):
                 nom = prix_element.get("nom")

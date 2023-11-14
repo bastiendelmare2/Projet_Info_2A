@@ -1,5 +1,6 @@
 import pandas as pd
 import json
+import html
 from datetime import datetime
 from METIER.Coordonnees import Coordonnees
 from BDD.Connexion import DBConnection
@@ -147,17 +148,22 @@ class StationsServices_Dao(metaclass=Singleton):
             return []
 
 
-    def trouver_stations(dataframe, ref_latitude, ref_longitude, n):
-        start_time = datetime.now()  # Heure d'exécution
 
-        dataframe['distance'] = dataframe.apply(lambda row: Coordonnees.calculer_distance(ref_latitude, ref_longitude, row['latitude'], row['longitude']), axis=1)
+
+    def trouver_stations(dataframe, ref_latitude, ref_longitude, n):
+        start_time = datetime.now()
+        Coord = Coordonnees(ref_latitude, ref_longitude)
+        dataframe['distance'] = dataframe.apply(lambda row: Coordonnees.calculer_distance(Coord, row['longitude'], row['latitude']), axis=1)
         dataframe = dataframe.sort_values(by='distance', ascending=True)
-        dataframe = dataframe.sort_values(by='prix', ascending=True)
         dataframe = dataframe.head(n)
 
         # Enlever les doublons basés sur 'latitude' et 'longitude'
         dataframe = dataframe.drop_duplicates(subset=['latitude', 'longitude'])
 
+        # Décodez les séquences Unicode dans la colonne 'ville'
+        dataframe['ville'] = dataframe['ville'].apply(html.unescape)
+
+        # Créer le dictionnaire de résultats
         result_dict = {
             "parameters": {
                 "position (longitude, latitude)": (ref_longitude, ref_latitude),
@@ -166,9 +172,11 @@ class StationsServices_Dao(metaclass=Singleton):
             "execution_time": start_time.strftime("%Y-%m-%d %H:%M:%S"),
             "data": dataframe.to_dict(orient='records')
         }
-        result_dict = json.dumps(result_dict, indent=4)
+        result_dict = json.dumps(result_dict, indent=4, ensure_ascii=False)
 
         return result_dict
+
+
 
     def stations_services_prix_par_station_preferee(self, id_stations_pref):
         try:

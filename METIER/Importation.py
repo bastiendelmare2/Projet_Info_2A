@@ -53,4 +53,11 @@ def XML():
     with open(file_path, "w", encoding="UTF-8") as xml_file:
         xml_file.write(xml_content_str)
 
-    return "Le fichier a bien été sauvegardé"
+    # Chemin du fichier à sauvegarder
+    file_path = os.path.join(directory_path, file_name)
+
+    # Écriture
+    with open(file_path, "w", encoding="UTF-8") as xml_file:
+        xml_file.write(xml_content_str)
+
+    return file_path  # Retourne le chemin du fichier sauvegardé
