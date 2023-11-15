@@ -1,0 +1,99 @@
+import inquirer
+from geopy.geocoders import Nominatim
+
+class Accueil:
+    def show(self):
+        questions = [
+            inquirer.List(
+                'menu',
+                message="Sélectionnez une option :",
+                choices=["Faire une recherche", "S'authentifier", "Créer un compte"],
+            ),
+        ]
+
+        answers = inquirer.prompt(questions)
+        selected_option = answers.get('menu', '').strip().lower()
+        return selected_option
+
+
+class Recherche:
+    @staticmethod
+    def transfo_adresse_GPS(adresse):
+        # Demandez à l'utilisateur d'entrer une adresse
+        address = str(adresse)
+
+        # Créez un géocodeur avec le service Nominatim
+        geocoder = Nominatim(user_agent="Mon application Python")
+
+        # Géocodez l'adresse
+        location = geocoder.geocode(address)
+
+        # Obtenez les coordonnées GPS
+        if location:
+            latitude, longitude = location.latitude, location.longitude
+            return latitude, longitude
+        else:
+            print("Adresse non trouvée.")
+            return None
+
+    def show(self):
+        adresse = [
+            inquirer.List(
+                'recherche',
+                message="Voulez-vous :",
+                choices=["Entrer une adresse postale", "Entrer des coordonnées GPS", "Revenir à la page d'accueil"]
+            ),
+        ]
+
+        answers = inquirer.prompt(adresse)
+        selected_option_recherche = answers.get('recherche', '').strip().lower()
+
+        if selected_option_recherche == "entrer une adresse postale":
+            adresse_postale = input("Entrer l'adresse postale : ").strip()
+            coordonnees_GPS = self.transfo_adresse_GPS(adresse_postale)
+            if coordonnees_GPS:
+                print(coordonnees_GPS)
+
+        elif selected_option_recherche == "entrer des coordonnées gps":
+            latitude = input("Entrer la latitude : ").strip()
+            longitude = input("Entrer la longitude : ").strip()
+
+        elif selected_option_recherche == "revenir à la page d'accueil":
+            view_manager.current_view = Accueil()
+
+
+class Authentification:
+    def show(self):
+        identifiant = input("Entrer votre identifiant : ").strip()
+        mot_de_passe = input("Entrer votre mot de passe : ").strip()
+
+
+class CreationCompte:
+    def show(self):
+        identifiant = input("Entrer votre identifiant : ").strip()
+        mot_de_passe = input("Entrer votre mot de passe : ").strip()
+
+
+class ViewManager:
+    def __init__(self):
+        self.current_view = Accueil()
+
+    def run(self):
+        while True:
+            user_input = self.current_view.show()
+
+            if user_input == 'faire une recherche':
+                self.current_view = Recherche()
+            elif user_input == "s'authentifier":
+                self.current_view = Authentification()
+            elif user_input == 'créer un compte':
+                self.current_view = CreationCompte()
+            elif user_input == 'revenir à la page d\'accueil':
+                self.current_view = Accueil()
+            else:
+                print("Entrée invalide. Veuillez réessayer.")
+
+
+if __name__ == "__main__":
+    view_manager = ViewManager()
+    view_manager.run()
