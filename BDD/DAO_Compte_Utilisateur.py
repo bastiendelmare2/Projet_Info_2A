@@ -6,7 +6,7 @@ from METIER.ComptesUtilisateurs import ComptesUtilisateurs
 
 class Compte_User_DAO(metaclass=Singleton):
     @staticmethod
-    def ajouter_compte_utilisateur(compte_utilisateur: ComptesUtilisateurs) -> bool:
+    def ajouter_compte_utilisateur(self, compte_utilisateur: ComptesUtilisateurs) -> bool:
         """Création d'un compte_utilisateur dans la base de données."""
         res = None
 
@@ -33,7 +33,7 @@ class Compte_User_DAO(metaclass=Singleton):
         return created
 
     @staticmethod
-    def verifier_connexion(identifiant: str, mot_de_passe: str) -> bool:
+    def verifier_connexion(self, identifiant: str, mot_de_passe: str) -> bool:
         """Vérification des informations de connexion d'un utilisateur."""
         try:
             with DBConnection().connection as connection:

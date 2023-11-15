@@ -5,7 +5,7 @@ from METIER.Horaires import Horaires
 
 
 class Horaires_Dao(metaclass=Singleton):
-    def ajouter_horaires(id_horaires, horaires) -> bool:
+    def ajouter_horaires(self, id_horaires, horaires) -> bool:
         """Ajout d'une Station Service dans la BDD
 
         Parameters

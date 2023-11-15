@@ -3,7 +3,7 @@ from utils.singleton import Singleton
 
 
 class Coordonnees_Dao(metaclass=Singleton):
-    def ajouter_coordonnees(id_stations, longitude, latitude) -> bool:
+    def ajouter_coordonnees(self, id_stations, longitude, latitude) -> bool:
         """Ajout d'une Station Service dans la BDD
 
         Parameters

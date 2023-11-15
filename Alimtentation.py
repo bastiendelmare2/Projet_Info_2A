@@ -12,7 +12,6 @@ from BDD.DAO_PrixCarburants import PrixCarburantsDAO
 from BDD.DAO_Services import Services_Dao
 from BDD.DAO_Stations_to_Services import StationsToServicesDAO
 from BDD.DAO_Coordonnees import Coordonnees_Dao
-from BDD.DAO_Horaires  import Horaires_Dao
 
 class Alimentation:
     @staticmethod

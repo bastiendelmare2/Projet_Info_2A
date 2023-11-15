@@ -3,7 +3,7 @@ from utils.singleton import Singleton
 
 
 class TypeCarburantDao(metaclass=Singleton):
-    def ajouter_TypeCarburant(id_typecarburants, nom_type_carburants)-> bool:
+    def ajouter_TypeCarburant(self, id_typecarburants, nom_type_carburants)-> bool:
         """Ajout d'un type de carburant dans la BDD
 
         Parameters

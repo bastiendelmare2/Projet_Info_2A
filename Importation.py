@@ -2,7 +2,6 @@ import requests
 import zipfile
 from io import BytesIO
 import os
-from datetime import datetime
 
 
 def XML():

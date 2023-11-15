@@ -3,7 +3,7 @@ from utils.singleton import Singleton
 
 
 class Services_Dao(metaclass=Singleton):
-    def ajouter_services(id_service, nom_service) -> bool:
+    def ajouter_services(self, id_service, nom_service) -> bool:
         """Ajout d'une Station Service dans la BDD
 
         Parameters
@@ -28,14 +28,3 @@ class Services_Dao(metaclass=Singleton):
                     )
         except Exception as e:
             print(e)
-
-        
-    def reset_table():
-        """Réinitialise la table Services en supprimant toutes les données"""
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute("DELETE FROM projet2a.Services;")
-        except Exception as e:
-            print(e)
-

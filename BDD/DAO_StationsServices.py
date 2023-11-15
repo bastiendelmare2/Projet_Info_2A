@@ -10,7 +10,7 @@ from METIER.StationsServices import StationsServices
 
 
 class StationsServices_Dao(metaclass=Singleton):
-    def ajouter_StationsServices(StationsServices: StationsServices) -> bool:
+    def ajouter_StationsServices(self,StationsServices: StationsServices) -> bool:
         """Ajout d'une Station Service dans la BDD 
 
         Parameters
@@ -75,7 +75,7 @@ class StationsServices_Dao(metaclass=Singleton):
 
         return StationsServices
 
-    def delete(StationsServices) -> bool:
+    def delete(self, StationsServices) -> bool:
         """Deleting a user from the database
 
         Parameters
@@ -104,7 +104,7 @@ class StationsServices_Dao(metaclass=Singleton):
 
         return res > 0
     
-    def filtre_stations(nom_type_carburant=None, nom_service=None):
+    def filtre_stations(self, nom_type_carburant=None, nom_service=None):
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -149,7 +149,7 @@ class StationsServices_Dao(metaclass=Singleton):
 
 
 
-    def trouver_stations(dataframe, ref_latitude, ref_longitude, n, distance_max=None):
+    def trouver_stations(self, dataframe, ref_latitude, ref_longitude, n, distance_max=None):
         start_time = datetime.now()
         Coord = Coordonnees(ref_latitude, ref_longitude)
         dataframe['distance'] = dataframe.apply(lambda row: Coordonnees.calculer_distance(Coord, row['longitude'], row['latitude']), axis=1)
