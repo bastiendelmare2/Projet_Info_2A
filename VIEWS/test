@@ -1,5 +1,6 @@
 import inquirer
 from geopy.geocoders import Nominatim
+from METIER.Utilisateur import Utilisateur
 
 class Accueil:
     def show(self):
@@ -17,8 +18,7 @@ class Accueil:
 
 
 class Recherche:
-    @staticmethod
-    def transfo_adresse_GPS(adresse):
+    def transfo_adresse_GPS(self, adresse):
         # Demandez à l'utilisateur d'entrer une adresse
         address = str(adresse)
 
@@ -51,21 +51,58 @@ class Recherche:
         if selected_option_recherche == "entrer une adresse postale":
             adresse_postale = input("Entrer l'adresse postale : ").strip()
             coordonnees_GPS = self.transfo_adresse_GPS(adresse_postale)
-            if coordonnees_GPS:
-                print(coordonnees_GPS)
 
+            if coordonnees_GPS:
+                questions = [
+                    inquirer.List(
+                        'filtres',
+                        message="Voulez-vous appliquer un filtre sur votre recherche ? :",
+                        choices=["Non", "Oui"],
+                    ),
+                ]
+                answers = inquirer.prompt(questions)
+                selected_option = answers.get('filtres', '').strip().lower()
+                return selected_option
+            else:
+                print("Coordonnées GPS non disponibles.")
+                return None
+            
         elif selected_option_recherche == "entrer des coordonnées gps":
             latitude = input("Entrer la latitude : ").strip()
             longitude = input("Entrer la longitude : ").strip()
+            questions = [
+                inquirer.List(
+                    'filtres',
+                    message="Voulez-vous appliquer un filtre sur votre recherche ? :",
+                    choices=["Non", "Oui"],
+                ),
+            ]
+            answers = inquirer.prompt(questions)
+            selected_option = answers.get('filtres', '').strip().lower()
+            return selected_option
 
         elif selected_option_recherche == "revenir à la page d'accueil":
-            view_manager.current_view = Accueil()
+            return 'accueil'
 
 
 class Authentification:
-    def show(self):
-        identifiant = input("Entrer votre identifiant : ").strip()
-        mot_de_passe = input("Entrer votre mot de passe : ").strip()
+    def __init__(self, utilisateurs):
+        self.utilisateurs = utilisateurs
+        self.utilisateur_actuel = None
+
+    def authentifier(self):
+        while True:
+            identifiant = input("Entrer votre identifiant : ").strip()
+            mot_de_passe = input("Entrer votre mot de passe : ").strip()
+
+            utilisateur_trouve = next((utilisateur for utilisateur in self.utilisateurs if utilisateur.id_utilisateur == identifiant and utilisateur.mdp_utilisateur == mot_de_passe), None)
+
+            if utilisateur_trouve:
+                self.utilisateur_actuel = utilisateur_trouve
+                print("Authentification réussie!")
+                break
+            else:
+                print("Identifiant ou mot de passe incorrect. Veuillez réessayer.")
 
 
 class CreationCompte:
@@ -88,7 +125,7 @@ class ViewManager:
                 self.current_view = Authentification()
             elif user_input == 'créer un compte':
                 self.current_view = CreationCompte()
-            elif user_input == 'revenir à la page d\'accueil':
+            elif user_input == 'accueil':
                 self.current_view = Accueil()
             else:
                 print("Entrée invalide. Veuillez réessayer.")
