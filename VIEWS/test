@@ -1,6 +1,5 @@
 import inquirer
 from geopy.geocoders import Nominatim
-from METIER.Utilisateur import Utilisateur
 
 class Accueil:
     def show(self):
@@ -15,7 +14,6 @@ class Accueil:
         answers = inquirer.prompt(questions)
         selected_option = answers.get('menu', '').strip().lower()
         return selected_option
-
 
 class Recherche:
     def transfo_adresse_GPS(self, adresse):
@@ -73,17 +71,86 @@ class Recherche:
             questions = [
                 inquirer.List(
                     'filtres',
-                    message="Voulez-vous appliquer un filtre sur votre recherche ? :",
-                    choices=["Non", "Oui"],
-                ),
+                    message="Voulez-vous appliquer des filtres sur votre recherche ?",
+                    choices=["Oui", "Non"],
+                 ),
             ]
+
             answers = inquirer.prompt(questions)
-            selected_option = answers.get('filtres', '').strip().lower()
+            selected_option_filtres = answers.get('filtres', '').strip().lower()
+            
+            if selected_option_filtres =="Oui":
+                questions_type_carburant = [
+                    inquirer.List(
+                        'type_carburant',
+                        message="Quel carburant souhaitez-vous ? :",
+                        choices=["Gazole", "carbu1", "carbu2", "carbu34", "aucun"],
+                    ),
+                ]
+                answers_type_carburant = inquirer.prompt(questions_type_carburant)
+                selected_option_type_carburant = answers_type_carburant.get('type_carburant', '').strip().lower()
+
+                if selected_option_type_carburant == "aucun":
+                    filtre_carburant = None
+                else:
+                    filtre_carburant = selected_option_type_carburant
+
+                questions_nb_stations = [
+                    inquirer.List(
+                        'Nombre de stations affichées',
+                        message="Combien de stations souhaitez-vous afficher ? :",
+                        choices=["1", "5", "10"],
+                    ),
+                ]   
+
+                answers_nb_stations = inquirer.prompt(questions_nb_stations)
+                selected_option_nb_stations = answers_nb_stations.get('Nombre de stations affichées', '').strip().lower()
+
+                nb_stations = int(selected_option_nb_stations)
+
+                distance_max = input("Quelle distance maximum tolérez-vous pour rejoindre la station la plus proche : ")
+
+                return selected_option_type_carburant
+
             return selected_option
 
         elif selected_option_recherche == "revenir à la page d'accueil":
             return 'accueil'
 
+class Filtres:
+    @staticmethod
+    def show(self, latitude, longitude):
+        questions_type_carburant = [
+            inquirer.List(
+                'type_carburant',
+                message="Quel carburant souhaitez-vous ? :",
+                choices=["Gazole", "carbu1", "carbu2", "carbu34", "aucun"],
+            ),
+        ]
+        answers_type_carburant = inquirer.prompt(questions_type_carburant)
+        selected_option_type_carburant = answers_type_carburant.get('type_carburant', '').strip().lower()
+
+        if selected_option_type_carburant == "aucun":
+            filtre_carburant = None
+        else:
+            filtre_carburant = selected_option_type_carburant
+
+        questions_nb_stations = [
+            inquirer.List(
+                'Nombre de stations affichées',
+                message="Combien de stations souhaitez-vous afficher ? :",
+                choices=["1", "5", "10"],
+            ),
+        ]
+
+        answers_nb_stations = inquirer.prompt(questions_nb_stations)
+        selected_option_nb_stations = answers_nb_stations.get('Nombre de stations affichées', '').strip().lower()
+
+        nb_stations = int(selected_option_nb_stations)
+
+        distance_max = input("Quelle distance maximum tolérez-vous pour rejoindre la station la plus proche : ")
+
+        return selected_option_type_carburant
 
 class Authentification:
     def __init__(self, utilisateurs):
@@ -104,7 +171,6 @@ class Authentification:
             else:
                 print("Identifiant ou mot de passe incorrect. Veuillez réessayer.")
 
-
 class CreationCompte:
     def show(self):
         identifiant = input("Entrer votre identifiant : ").strip()
@@ -121,15 +187,10 @@ class ViewManager:
 
             if user_input == 'faire une recherche':
                 self.current_view = Recherche()
-            elif user_input == "s'authentifier":
-                self.current_view = Authentification()
-            elif user_input == 'créer un compte':
-                self.current_view = CreationCompte()
             elif user_input == 'accueil':
                 self.current_view = Accueil()
             else:
                 print("Entrée invalide. Veuillez réessayer.")
-
 
 if __name__ == "__main__":
     view_manager = ViewManager()
