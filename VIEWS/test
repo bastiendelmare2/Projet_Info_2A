@@ -187,9 +187,38 @@ class Authentification:
             if utilisateur_trouve:
                 self.utilisateur_actuel = utilisateur_trouve
                 print("Authentification réussie!")
-                break
+
+                questions = [
+                    inquirer.List(
+                        'authentification',
+                        message="Voulez-vous:",
+                        choices=["Consulter vos listes", "Créer une liste", "Retourner à la page d'accueil"],
+                    ),
+                ]
+
+                answers = inquirer.prompt(questions)
+                selected_option_authentification = answers.get('authentification', '').strip().lower()
+
+                return selected_option_authentification                
+
             else:
                 print("Identifiant ou mot de passe incorrect. Veuillez réessayer.")
+
+
+class ConsulterListes:
+    def show(self):
+        #importer les listes de l'utilisateur
+        print()
+        questions = [
+            inquirer.List(
+                'Listes_utilisateurs',
+                message="Quel liste souhaitez-vous consulter",
+                choices=[#mettre le nom des listes],
+            ),
+        ]
+
+        answers = inquirer.prompt(questions)
+        selected_option_listes_utilisateurs = answers.get('Listes_utilisateurs', '').strip().lower()
 
 class CreationCompte:
     def show(self):
