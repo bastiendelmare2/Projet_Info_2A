@@ -213,7 +213,7 @@ class ConsulterListes:
             inquirer.List(
                 'Listes_utilisateurs',
                 message="Quel liste souhaitez-vous consulter",
-                choices=[#mettre le nom des listes],
+                choices=["mettre le nom des listes"],
             ),
         ]
 
