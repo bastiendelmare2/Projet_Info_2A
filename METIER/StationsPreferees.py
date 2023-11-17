@@ -7,5 +7,3 @@ class StationsPreferees:
 
     def __str__(self):
         return f"Stations Préférées {self.id_stations_pref}"
-
-        

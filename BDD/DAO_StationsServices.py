@@ -138,8 +138,18 @@ class StationsServices_Dao(metaclass=Singleton):
                     cursor.execute(query, params)
 
                     # Récupérer les résultats
-                    stations = cursor.fetchall()
-                    stations = pd.DataFrame(stations)
+                    stations_data = cursor.fetchall()
+
+                    # Création des objets StationsServices à partir des données récupérées
+                    stations = []
+                    for station_data in stations_data:
+                        station = StationsServices(
+                            id_stations=station_data[0],
+                            adresse=station_data[1],
+                            ville=station_data[2],
+                            # Ajoutez d'autres attributs si nécessaire en fonction de votre classe StationsServices
+                        )
+                        stations.append(station)
 
             return stations
 
@@ -147,29 +157,8 @@ class StationsServices_Dao(metaclass=Singleton):
             print("Erreur lors de la récupération des stations-services :", e)
             return []
 
+        except Exception as e:
+            print("Erreur lors de la récupération des stations-services :", e)
+            return []
 
 
-    def trouver_stations(self, dataframe, ref_latitude, ref_longitude, n, distance_max=None):
-        start_time = datetime.now()
-        Coord = Coordonnees(ref_latitude, ref_longitude)
-        dataframe['distance'] = dataframe.apply(lambda row: Coordonnees.calculer_distance(Coord, row['longitude'], row['latitude']), axis=1)
-        dataframe = dataframe.sort_values(by='distance', ascending=True)
-        
-        if distance_max is not None:
-            dataframe = dataframe[dataframe['distance'] < distance_max]
-
-        dataframe = dataframe.head(n)
-        dataframe = dataframe.drop_duplicates(subset=['latitude', 'longitude'])
-        dataframe['ville'] = dataframe['ville'].apply(html.unescape)
-
-        result_dict = {
-            "parameters": {
-                "position (longitude, latitude)": (ref_longitude, ref_latitude),
-                "nombre de stations": n
-            },
-            "execution_time": start_time.strftime("%Y-%m-%d %H:%M:%S"),
-            "data": dataframe.to_dict(orient='records')
-        }
-        result_dict = json.dumps(result_dict, indent=4, ensure_ascii=False)
-
-        return result_dict

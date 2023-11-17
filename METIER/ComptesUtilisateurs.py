@@ -13,3 +13,11 @@ class ComptesUtilisateurs:
         hashed_mot_de_passe = bcrypt.hashpw(mot_de_passe.encode('utf-8'), salt)
         return hashed_mot_de_passe
 
+    def verifier_mot_de_passe(self, mot_de_passe):
+        """Vérifie si le mot de passe correspond à celui stocké pour ce compte."""
+        return bcrypt.checkpw(mot_de_passe.encode('utf-8'), self.mot_de_passe)
+
+    def modifier_mot_de_passe(self, nouveau_mdp):
+        """Modifie le mot de passe pour ce compte."""
+        self.mot_de_passe = self._hash_password(nouveau_mdp)
+

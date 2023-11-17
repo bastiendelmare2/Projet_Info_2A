@@ -37,8 +37,4 @@ class StationsServices:
             carburants_str += f"Nom: {carburant.type_carburant}, Prix: {carburant.prix} | "
 
         # Retourne une chaîne formatée
-        return f"Station {self.id_stations}: {adresse_ville}, {horaires_str}, {services_str}, {carburants_str}"
-
-    
-
-        
+        return f"Station {self.id_stations}: {adresse_ville}, {horaires_str}, {services_str}, {carburants_str}

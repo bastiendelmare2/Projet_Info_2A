@@ -4,9 +4,10 @@ from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
 from METIER.ComptesUtilisateurs import ComptesUtilisateurs
 
+
 class Compte_User_DAO(metaclass=Singleton):
     @staticmethod
-    def ajouter_compte_utilisateur(self, compte_utilisateur: ComptesUtilisateurs) -> bool:
+    def ajouter_compte_utilisateur(compte_utilisateur: ComptesUtilisateurs) -> bool:
         """Création d'un compte_utilisateur dans la base de données."""
         res = None
 
@@ -33,33 +34,43 @@ class Compte_User_DAO(metaclass=Singleton):
         return created
 
     @staticmethod
-    def verifier_connexion(self, identifiant: str, mot_de_passe: str) -> bool:
-        """Vérification des informations de connexion d'un utilisateur."""
+    def get(id_compte: int) -> ComptesUtilisateurs:
+        """Récupère un compte utilisateur par son identifiant."""
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    # Récupérer le mot de passe haché depuis la base de données
                     cursor.execute(
-                        "SELECT mdp FROM Projet2A.compteutilisateur WHERE identifiant = %(identifiant)s;",
-                        {"identifiant": identifiant},
+                        "SELECT id_compte, mdp, identifiant FROM Projet2A.compteutilisateur WHERE id_compte = %(id_compte)s;",
+                        {"id_compte": id_compte}
                     )
-                    hashed_password = cursor.fetchone()
+                    res = cursor.fetchone()
 
-                    # Vérifier si le mot de passe entré correspond au mot de passe stocké
-                    if hashed_password:
-                        hashed_password_str = hashed_password['mdp']
-
-                        # Convertir le format hexadécimal en une chaîne binaire
-                        hashed_password_bin = binascii.unhexlify(hashed_password_str[2:]) 
-
-                        return bcrypt.checkpw(mot_de_passe.encode('utf-8'), hashed_password_bin)
+                    if res:
+                        return ComptesUtilisateurs(res[0], res[1], res[2])
+                    else:
+                        raise ValueError("Le compte n'existe pas.")
         except Exception as e:
             print(e)
+            raise ValueError("Une erreur s'est produite lors de la récupération du compte.")
 
-        return False
+        @staticmethod
+        def modifier_mot_de_passe(compte_utilisateur: ComptesUtilisateurs, nouveau_mdp: str) -> bool:
+            """Modifie le mot de passe d'un compte utilisateur dans la base de données."""
+            try:
+                # Utilisation directe du mot de passe haché stocké dans l'objet ComptesUtilisateurs
+                hashed_password = compte_utilisateur.mot_de_passe
 
-
-
-
-
-
+                with DBConnection().connection as connection:
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            "UPDATE Projet2A.compteutilisateur SET mdp = %(nouveau_mdp)s WHERE id_compte = %(id_compte)s;",
+                            {
+                                "nouveau_mdp": hashed_password,
+                                "id_compte": compte_utilisateur.id_compte
+                            }
+                        )
+                        connection.commit()
+                        return True
+            except Exception as e:
+                print(e)
+                return False
