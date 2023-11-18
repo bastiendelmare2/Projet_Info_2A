@@ -1,5 +1,6 @@
 from METIER.ComptesUtilisateurs import ComptesUtilisateurs
 from BDD.DAO_Compte_Utilisateur import Compte_User_DAO
+import bcrypt
 
 
 
@@ -10,15 +11,22 @@ class ServiceCompte:
         compte = ComptesUtilisateurs(id_compte, mdp, identifiant)
         return Compte_User_DAO.ajouter_compte_utilisateur(compte_utilisateur=compte)
 
-    @staticmethod
-    def verifier_connexion(identifiant: str, mot_de_passe: str) -> bool:
+    def verifier_connexion(id_compte: int, identifiant: str, mot_de_passe: str) -> bool:
         """Vérifie la connexion d'un utilisateur."""
         # Récupérer le compte utilisateur par identifiant depuis la DAO
-        compte = Compte_User_DAO.get(identifiant)
+        compte = Compte_User_DAO.get(id_compte)
         if compte:
+            # Imprimer les informations du compte utilisateur récupéré
+            print(f"Compte récupéré : {compte}")
+            print(f"Mot de passe haché dans la base : {compte.mot_de_passe}")
+            
             # Vérifier si les mots de passe correspondent
-            return compte.verifier_mot_de_passe(mot_de_passe)
+            if ComptesUtilisateurs.verifier_mot_de_passe(compte, mot_de_passe):
+                return True
         return False
+
+
+
 
     @staticmethod
     def changer_mot_de_passe(id_compte: int, nouveau_mdp: str) -> bool:

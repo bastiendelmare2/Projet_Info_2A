@@ -13,7 +13,7 @@ class Service_Station:
         Coord = Coordonnees(ref_latitude, ref_longitude)
         
         for station in liste_stations:
-            station.distance = Coordonnees.calculer_distance(Coord, station.coordonnees.longitude, station.coordonnees.latitude)
+            station.distance = Coordonnees.calculer_distance(Coord, station.coordonnees[0], station.coordonnees[1])
         
         liste_stations.sort(key=lambda x: x.distance)
         
@@ -22,21 +22,35 @@ class Service_Station:
         
         liste_stations = liste_stations[:n]
         
-        unique_stations = {station.coordonnees.latitude: station for station in liste_stations}.values()
-        for station in unique_stations:
+        for station in liste_stations:
             station.ville = html.unescape(station.ville)
-        
+            
         result_dict = {
             "parameters": {
                 "position (longitude, latitude)": (ref_longitude, ref_latitude),
                 "nombre de stations": n
             },
             "execution_time": start_time.strftime("%Y-%m-%d %H:%M:%S"),
-            "data": [station.__dict__ for station in unique_stations]
+            "data": []
         }
+        
+        for station in liste_stations:
+            station_info = {
+                "id_stations": station.id_stations,
+                "adresse": station.adresse,
+                "ville": station.ville,
+                "distance": station.distance,
+                "coordonnees": station.coordonnees,
+                "services": station.services,
+                "prixcarburants": station.prixcarburants  # La structure a été modifiée ici
+            }
+            result_dict["data"].append(station_info)
+        
         result_dict = json.dumps(result_dict, indent=4, ensure_ascii=False)
         
         return result_dict
+
+
 
 
     @staticmethod

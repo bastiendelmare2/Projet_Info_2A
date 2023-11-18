@@ -10,7 +10,8 @@ from METIER.StationsServices import StationsServices
 
 
 class StationsServices_Dao(metaclass=Singleton):
-    def ajouter_StationsServices(self,StationsServices: StationsServices) -> bool:
+    @staticmethod
+    def ajouter_StationsServices(StationsServices: StationsServices) -> bool:
         """Ajout d'une Station Service dans la BDD 
 
         Parameters
@@ -47,7 +48,8 @@ class StationsServices_Dao(metaclass=Singleton):
 
         return created
 
-    def trouver_par_id(self, id) -> StationsServices:
+    @staticmethod
+    def trouver_par_id(id) -> StationsServices:
         """Touver une STations Service par id
 
         Parameters
@@ -75,7 +77,8 @@ class StationsServices_Dao(metaclass=Singleton):
 
         return StationsServices
 
-    def delete(self, StationsServices) -> bool:
+    @staticmethod
+    def delete(StationsServices) -> bool:
         """Deleting a user from the database
 
         Parameters
@@ -104,7 +107,8 @@ class StationsServices_Dao(metaclass=Singleton):
 
         return res > 0
     
-    def filtre_stations(self, nom_type_carburant=None, nom_service=None):
+    @staticmethod
+    def filtre_stations(nom_type_carburant=None, nom_service=None):
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -140,25 +144,36 @@ class StationsServices_Dao(metaclass=Singleton):
                     # Récupérer les résultats
                     stations_data = cursor.fetchall()
 
-                    # Création des objets StationsServices à partir des données récupérées
+                    # Créer une liste pour stocker les objets StationsServices
                     stations = []
+
                     for station_data in stations_data:
-                        station = StationsServices(
-                            id_stations=station_data[0],
-                            adresse=station_data[1],
-                            ville=station_data[2],
-                            # Ajoutez d'autres attributs si nécessaire en fonction de votre classe StationsServices
-                        )
-                        stations.append(station)
+                        # Vérifier si la station existe déjà dans la liste
+                        station_exists = next((station for station in stations if station.id_stations == station_data['id_stations']), None)
 
-            return stations
+                        if station_exists:
+                            # Si la station existe déjà, ajoutez simplement un nouveau type de carburant et son prix à prixcarburants
+                            station_exists.prixcarburants.append((station_data['nom_type_carburants'], float(station_data['prix'])))
+                        else:
+                            # Si la station n'existe pas, créez une nouvelle station avec ses données
+                            station = StationsServices(
+                                id_stations=station_data['id_stations'],
+                                adresse=station_data['adresse'],
+                                ville=station_data['ville'],
+                                services=station_data['nom_service'].split(', '),
+                                prixcarburants=[
+                                    (station_data['nom_type_carburants'], float(station_data['prix']))
+                                ],
+                                coordonnees=(station_data['longitude'], station_data['latitude'])
+                            )
+                            stations.append(station)
+
+                    return stations
 
         except Exception as e:
             print("Erreur lors de la récupération des stations-services :", e)
             return []
 
-        except Exception as e:
-            print("Erreur lors de la récupération des stations-services :", e)
-            return []
+
 
 

@@ -6,7 +6,8 @@ from datetime import datetime
 from METIER.StationsPreferees import StationsPreferees  # Make sure to import the correct class
 
 class StationsPreferees_Dao(metaclass=Singleton):
-    def ajouter_StationsPreferee(self, stations_pref: StationsPreferees) -> bool:
+    @staticmethod
+    def ajouter_StationsPreferee(stations_pref: StationsPreferees) -> bool:
         """Ajout d'une Station Preferee dans la BDD 
 
         Parameters
@@ -43,7 +44,8 @@ class StationsPreferees_Dao(metaclass=Singleton):
 
         return created
 
-    def trouver_par_id(self, id_compte) -> StationsPreferees:
+    @staticmethod
+    def trouver_par_id(id_compte) -> StationsPreferees:
         """Trouver une Station Preferee par id
 
         Parameters
@@ -70,7 +72,8 @@ class StationsPreferees_Dao(metaclass=Singleton):
 
         return res  # You might want to convert the result to a StationsPreferees object
 
-    def delete(self, id_stations_pref) -> bool:
+    @staticmethod
+    def delete(id_stations_pref) -> bool:
         """Deleting a station preferee from the database
 
         Parameters
@@ -99,7 +102,8 @@ class StationsPreferees_Dao(metaclass=Singleton):
 
         return res > 0
 
-    def stations_services_par_station_preferee(self, id_stations_pref):
+    @staticmethod
+    def stations_services_par_station_preferee(id_stations_pref):
         try:
             # Ajouter la date et l'heure d'exécution
             start_time = datetime.now()

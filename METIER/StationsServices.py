@@ -4,7 +4,6 @@ class StationsServices:
         id_stations,
         adresse,
         ville,
-        horaires,
         services,
         prixcarburants,
         coordonnees,
@@ -12,7 +11,6 @@ class StationsServices:
         self.id_stations = id_stations
         self.adresse = adresse
         self.ville = ville
-        self.horaires = horaires
         self.services = services
         self.prixcarburants = prixcarburants
         self.coordonnees = coordonnees
@@ -37,4 +35,4 @@ class StationsServices:
             carburants_str += f"Nom: {carburant.type_carburant}, Prix: {carburant.prix} | "
 
         # Retourne une chaîne formatée
-        return f"Station {self.id_stations}: {adresse_ville}, {horaires_str}, {services_str}, {carburants_str}
+        return f"Station {self.id_stations}: {adresse_ville}, {horaires_str}, {services_str}, {carburants_str}"

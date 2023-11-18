@@ -3,7 +3,9 @@ from utils.singleton import Singleton
 
 
 class StationsToStationsPrefereesDAO(metaclass=Singleton):
-    def associer_station_a_station_preferee(self,id_stations, id_stations_pref) -> bool:
+
+    @staticmethod
+    def associer_station_a_station_preferee(id_stations, id_stations_pref) -> bool:
         """Associer une station de service à une station préférée dans la base de données
 
         Parameters
@@ -37,7 +39,9 @@ class StationsToStationsPrefereesDAO(metaclass=Singleton):
 
         return created
 
-    def dissocier_station_de_station_preferee(self, id_stations, id_stations_pref) -> bool:
+
+    @staticmethod
+    def dissocier_station_de_station_preferee(id_stations, id_stations_pref) -> bool:
         """Dissocier une station de service d'une station préférée dans la base de données
 
         Parameters
