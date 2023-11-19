@@ -11,19 +11,19 @@ class Compte_User_DAO(metaclass=Singleton):
     def ajouter_compte_utilisateur(compte_utilisateur: ComptesUtilisateurs) -> bool:
         """Création d'un compte_utilisateur dans la base de données."""
         res = None
-        modif = ComptesUtilisateurs()
-        compte_utilisateur.mot_de_passe = modif._hash_password(compte_utilisateur.mot_de_passe)
+        compte_utilisateur.mot_de_passe = compte_utilisateur._hash_password(compte_utilisateur.mot_de_passe)
 
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO Projet2A.compteutilisateur(id_compte, mdp, identifiant) VALUES "
-                        "(%(id_compte)s, %(mdp)s, %(identifiant)s) RETURNING id_compte;",
+                        "INSERT INTO Projet2A.compteutilisateur(id_compte, mdp, identifiant, sel) VALUES "
+                        "(%(id_compte)s, %(mdp)s, %(identifiant)s, %(sel)s) RETURNING id_compte;",
                         {
                             "id_compte": compte_utilisateur.id_compte,
                             "mdp": compte_utilisateur.mot_de_passe,
                             "identifiant": compte_utilisateur.identifiant,
+                            "sel": compte_utilisateur.sel
                         },
                     )
                     res = cursor.fetchone()
@@ -36,27 +36,34 @@ class Compte_User_DAO(metaclass=Singleton):
 
         return created
 
+
     @staticmethod
     def get(id_compte: int):
-        """Récupère un compte utilisateur par son identifiant."""
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT id_compte, mdp, identifiant FROM projet2a.compteutilisateur WHERE id_compte = %(id_compte)s;",
+                        "SELECT id_compte, mdp, identifiant, sel FROM projet2a.compteutilisateur WHERE id_compte = %(id_compte)s;",
                         {"id_compte": id_compte}
                     )
                     res = cursor.fetchone()
 
                     if res:
-                        compte_utilisateur = ComptesUtilisateurs(res['id_compte'], res['mdp'], res['identifiant'])
-                        return compte_utilisateur  # Retourne un objet CompteUtilisateurs
+                        compte_utilisateur = ComptesUtilisateurs(
+                            res['id_compte'],
+                            res['mdp'],  # Change this line to return the value of the 'mdp' column as a bytes object
+                            res['identifiant'],
+                            sel=res['sel'] if 'sel' in res else None,  # Utilisation du sel s'il existe, sinon None
+                            hashed=True  # Indication que le mot de passe est déjà hashé
+                        )
+                        return compte_utilisateur
 
-                    return None  # Retourne None si aucun compte n'est trouvé avec cet identifiant
+                    return None
 
         except Exception as e:
-            print(e)
-            raise ValueError("Une erreur s'est produite lors de la récupération du compte.")
+            print(f"Erreur lors de la récupération du compte : {e}")
+            return None
+
 
 
     @staticmethod

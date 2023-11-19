@@ -3,7 +3,6 @@ from BDD.DAO_Compte_Utilisateur import Compte_User_DAO
 import bcrypt
 
 
-
 class ServiceCompte:
     @staticmethod
     def creer_compte(id_compte: int, mdp: str, identifiant: str) -> bool:
@@ -11,21 +10,22 @@ class ServiceCompte:
         compte = ComptesUtilisateurs(id_compte, mdp, identifiant)
         return Compte_User_DAO.ajouter_compte_utilisateur(compte_utilisateur=compte)
 
+    @staticmethod
     def verifier_connexion(id_compte: int, identifiant: str, mot_de_passe: str) -> bool:
-        """Vérifie la connexion d'un utilisateur."""
-        # Récupérer le compte utilisateur par identifiant depuis la DAO
-        compte = Compte_User_DAO.get(id_compte)
-        if compte:
-            # Imprimer les informations du compte utilisateur récupéré
-            print(f"Compte récupéré : {compte}")
-            print(f"Mot de passe haché dans la base : {compte.mot_de_passe}")
-            
-            # Vérifier si les mots de passe correspondent
-            if ComptesUtilisateurs.verifier_mot_de_passe(compte, mot_de_passe):
-                return True
+        compte_utilisateur = Compte_User_DAO.get(id_compte)
+
+        if compte_utilisateur and compte_utilisateur.identifiant == identifiant:
+            # Pas besoin de recalculer le hachage ici
+
+            # Hachage du mot de passe entré par l'utilisateur
+            mot_de_passe_clair = mot_de_passe.encode('utf-8')
+            mot_de_passe_hashe = bcrypt.hashpw(mot_de_passe_clair, compte_utilisateur.sel)
+
+            # Vérification du mot de passe
+            return bcrypt.checkpw(mot_de_passe_hashe, compte_utilisateur.mot_de_passe)
+
         return False
-
-
+  
 
 
     @staticmethod
