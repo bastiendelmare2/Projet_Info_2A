@@ -3,13 +3,14 @@ from METIER.Coordonnees import Coordonnees
 from BDD.DAO_StationsPreferees import StationsPreferees_Dao
 from BDD.DAO_Stations_to_StationsPreferees import StationsToStationsPrefereesDAO
 from METIER.StationsPreferees import StationsPreferees
+from BDD.DAO_StationsServices import StationsServices_Dao
 import html
 import json
 
 
 class Service_Station:
-    @staticmethod
-    def trouver_stations(liste_stations, ref_latitude, ref_longitude, n, distance_max=None):
+    def trouver_stations(nom_type_carburant, nom_service, ref_latitude, ref_longitude, n, distance_max=None):
+        liste_stations = StationsServices_Dao.filtre_stations(nom_type_carburant, nom_service)
         start_time = datetime.now()
         Coord = Coordonnees(ref_latitude, ref_longitude)
         
@@ -25,15 +26,9 @@ class Service_Station:
         
         for station in liste_stations:
             station.ville = html.unescape(station.ville)
-            
-        result_dict = {
-            "parameters": {
-                "position (longitude, latitude)": (ref_longitude, ref_latitude),
-                "nombre de stations": n
-            },
-            "execution_time": start_time.strftime("%Y-%m-%d %H:%M:%S"),
-            "data": []
-        }
+        
+        # Créer une liste pour stocker les stations
+        stations_list = []
         
         for station in liste_stations:
             station_info = {
@@ -45,12 +40,12 @@ class Service_Station:
                 "services": station.services,
                 "prixcarburants": station.prixcarburants  # La structure a été modifiée ici
             }
-            result_dict["data"].append(station_info)
+            stations_list.append(station_info)
         
-        result_dict = json.dumps(result_dict, indent=4, ensure_ascii=False)
-        
-        return result_dict
-
+        return stations_list, start_time, {
+            "position (longitude, latitude)": (ref_longitude, ref_latitude),
+            "nombre de stations": n
+        }
 
 
 
@@ -86,6 +81,7 @@ class Service_Station:
         
         # Utiliser la méthode DAO pour ajouter cette station préférée
         return StationsPreferees_Dao.ajouter_StationsPreferee(nouvelle_station_pref)
+        
 
     @staticmethod
     def supprimer_station_preferee(id_stations_pref):

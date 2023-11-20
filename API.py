@@ -6,51 +6,45 @@ from pydantic import BaseModel
 from starlette.responses import JSONResponse
 from starlette import status
 import uvicorn
+from SERVICES.Service_stations import Service_Station
+from BDD.DAO_StationsServices import StationsServices_Dao
+from SERVICES.Service_compte import ServiceCompte
 
 # On instancie le webservice
 app = FastAPI()
 
-class Todo(BaseModel):
-    id: int
-    content: str
-
-todos = {
-    1: Todo(id=1, content="Step 1 : "),
-    2: Todo(id=2, content="Step 2 : "),
-    3: Todo(id=3, content="Step 3 : "),
-    4: Todo(id=4, content="Step 4 : "),
-}
 
 # Définition du endpoint get /todo
-@app.get("/todo")
-async def get_all_todo():
-    return todos.values()
+@app.get("/trouver/stations/plus/proche")
+def stations_plus_proche_station (nom_type_carburant : str , nom_service : str, ref_latitude: float, ref_longitude : float, n : int, distance_max: float):
+    return Service_Station.trouver_stations(nom_type_carburant, nom_service, ref_latitude, ref_longitude, n, distance_max)
 
-# Définition du endpoint get /todo/{id_todo}
-@app.get("/todo/{id_todo}")
-async def get_todo_by_id(id_todo: int = Path(..., description="The `id` of the todo you want to get")):
-    todo = todos.get(id_todo)
-    if todo:
-        return todo
-    else:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": "Todo not found"})
+@app.get("/stations/par/station/pref")
+def stations_par_station_pref (id_stations_pref: int):
+    return Service_Station.stations_services_par_station_preferee(id_stations_pref)
 
-# Définition du endpoint post /todo
-@app.post("/todo", status_code=status.HTTP_201_CREATED)
-async def post_todo(todo: Todo):
-    if todo.id not in todos:
-        todos[todo.id] = todo
-        return todo
-    else:
-        return JSONResponse(status_code=status.HTTP_409_CONFLICT, content={"message": "Todo with this id already exists"})
+@app.post("/enleve/station/de/station/pref")
+def enlever_station_de_station_pref (id_stations_pref : int, id_stations: int):
+    return Service_Station.enlever_station_de_station_preferee(id_stations_pref, id_stations)
 
-#Définiton pour ajouter un nouvel utilisateur en utilisant POST
-@app.post("/nx_util", status_code=status.HTTP_201_CREATED)
-async def nx_util(id,mdp):
-    creer_util(id,mdp)#il faut utiliser la mathode que Bastien aura créé pour créer un utilisateur
+@app.post("/ajouter/station/à/station/pref")
+def enlever_station_a_station_pref (id_stations_pref : int, id_stations: int):
+    return Service_Station.ajouter_station_a_station_preferee(id_stations_pref, id_stations)
+
+@app.post("/créer/station/pref")
+def creer_station_pref(id_compte : int, nom_station : str, id_stations_pref : int):
+    return Service_Station.creer_station_preferee(id_compte, nom_station, id_stations_pref)
+
+@app.delete("/supprimer/station/pref")
+def supprimer_station_pref(id_stations_pref : int):
+    return Service_Station.supprimer_station_preferee(id_stations_pref)
+
+@app.get("/afficher/station/pref")
+def afficher_station_pref(id_compte : int):
+    return Service_Station.afficher_stations_preferees_utilisateur(id_compte)
+
 
 # Lancement de l'application sur le port 8151
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8151)
-
 
