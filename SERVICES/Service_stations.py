@@ -2,6 +2,7 @@ from datetime import datetime
 from METIER.Coordonnees import Coordonnees
 from BDD.DAO_StationsPreferees import StationsPreferees_Dao
 from BDD.DAO_Stations_to_StationsPreferees import StationsToStationsPrefereesDAO
+from METIER.StationsPreferees import StationsPreferees
 import html
 import json
 
@@ -77,3 +78,32 @@ class Service_Station:
         except Exception as e:
             print("Erreur lors de l'ajout de la station à la liste préférée :", e)
             return False
+
+    @staticmethod
+    def creer_station_preferee(id_compte, nom_station, id_stations_pref):
+        # Créer une nouvelle instance de StationsPreferees avec les données fournies
+        nouvelle_station_pref = StationsPreferees(id_stations_pref=id_stations_pref, id_compte=id_compte, nom=nom_station)
+        
+        # Utiliser la méthode DAO pour ajouter cette station préférée
+        return StationsPreferees_Dao.ajouter_StationsPreferee(nouvelle_station_pref)
+
+    @staticmethod
+    def supprimer_station_preferee(id_stations_pref):
+        # Utiliser la méthode DAO pour supprimer la station préférée
+        return StationsPreferees_Dao.delete(id_stations_pref)
+
+    @staticmethod
+    def afficher_stations_preferees_utilisateur(id_compte):
+        # Utiliser la méthode DAO pour trouver toutes les stations préférées de l'utilisateur
+        stations_preferees = StationsPreferees_Dao.trouver_par_id(id_compte)
+        
+        # Préparer la réponse JSON avec l'identifiant de compte
+        response_dict = {
+            "id_compte": id_compte,
+            "stations_preferees": stations_preferees
+        }
+        
+        # Convertir les résultats en un format JSON
+        result_json = json.dumps(response_dict, indent=2) if stations_preferees else json.dumps({"error": "Aucune station préférée trouvée pour cet utilisateur.", "id_compte": id_compte})
+        
+        return result_json

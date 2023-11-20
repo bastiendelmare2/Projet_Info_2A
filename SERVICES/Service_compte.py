@@ -15,17 +15,14 @@ class ServiceCompte:
         compte_utilisateur = Compte_User_DAO.get(id_compte)
 
         if compte_utilisateur and compte_utilisateur.identifiant == identifiant:
-            # Pas besoin de recalculer le hachage ici
-
-            # Hachage du mot de passe entré par l'utilisateur
+            # Hachage du mot de passe entré par l'utilisateur avec le sel du compte utilisateur
             mot_de_passe_clair = mot_de_passe.encode('utf-8')
             mot_de_passe_hashe = bcrypt.hashpw(mot_de_passe_clair, compte_utilisateur.sel)
 
-            # Vérification du mot de passe
+            # Vérification du mot de passe haché avec celui stocké dans la base de données
             return bcrypt.checkpw(mot_de_passe_hashe, compte_utilisateur.mot_de_passe)
 
         return False
-  
 
 
     @staticmethod

@@ -5,7 +5,6 @@ from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
 from METIER.ComptesUtilisateurs import ComptesUtilisateurs
 
-
 class Compte_User_DAO(metaclass=Singleton):
     @staticmethod
     def ajouter_compte_utilisateur(compte_utilisateur: ComptesUtilisateurs) -> bool:
@@ -17,11 +16,11 @@ class Compte_User_DAO(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO Projet2A.compteutilisateur(id_compte, mdp, identifiant, sel) VALUES "
-                        "(%(id_compte)s, %(mdp)s, %(identifiant)s, %(sel)s) RETURNING id_compte;",
+                        "INSERT INTO projet2a.CompteUtilisateur(id_compte, mot_de_passe, identifiant, sel) VALUES "
+                        "(%(id_compte)s, %(mot_de_passe)s, %(identifiant)s, %(sel)s) RETURNING id_compte;",
                         {
                             "id_compte": compte_utilisateur.id_compte,
-                            "mdp": compte_utilisateur.mot_de_passe,
+                            "mot_de_passe": compte_utilisateur.mot_de_passe,
                             "identifiant": compte_utilisateur.identifiant,
                             "sel": compte_utilisateur.sel
                         },
@@ -38,33 +37,32 @@ class Compte_User_DAO(metaclass=Singleton):
 
 
     @staticmethod
-    def get(id_compte: int):
+    def get(id_compte):
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT id_compte, mdp, identifiant, sel FROM projet2a.compteutilisateur WHERE id_compte = %(id_compte)s;",
+                        "SELECT id_compte, mot_de_passe, identifiant, sel FROM projet2a.CompteUtilisateur WHERE id_compte = %(id_compte)s;",
                         {"id_compte": id_compte}
                     )
-                    res = cursor.fetchone()
-
-                    if res:
-                        compte_utilisateur = ComptesUtilisateurs(
-                            res['id_compte'],
-                            res['mdp'],  # Change this line to return the value of the 'mdp' column as a bytes object
-                            res['identifiant'],
-                            sel=res['sel'] if 'sel' in res else None,  # Utilisation du sel s'il existe, sinon None
-                            hashed=True  # Indication que le mot de passe est déjà hashé
+                    compte_data = cursor.fetchone()
+                    
+                    if compte_data:
+                        # Convertir les données récupérées en un objet ComptesUtilisateurs
+                        compte = ComptesUtilisateurs(
+                            id_compte=compte_data["id_compte"],
+                            mot_de_passe=compte_data["mot_de_passe"],
+                            identifiant=compte_data["identifiant"],
+                            sel=compte_data["sel"],
+                            hashed=False  # Le mot de passe n'est pas encore haché dans l'objet ComptesUtilisateurs
                         )
-                        return compte_utilisateur
-
-                    return None
+                        return compte
+                    else:
+                        return None
 
         except Exception as e:
-            print(f"Erreur lors de la récupération du compte : {e}")
+            print("Erreur lors de la récupération du compte utilisateur :", e)
             return None
-
-
 
     @staticmethod
     def modifier_mot_de_passe(compte_utilisateur: ComptesUtilisateurs, nouveau_mdp: str) -> bool:
@@ -76,7 +74,7 @@ class Compte_User_DAO(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "UPDATE Projet2A.compteutilisateur SET mdp = %(nouveau_mdp)s WHERE id_compte = %(id_compte)s;",
+                        "UPDATE projet2a.CompteUtilisateur SET mot_de_passe = %(nouveau_mdp)s WHERE id_compte = %(id_compte)s;",
                         {
                             "nouveau_mdp": hashed_password,
                             "id_compte": compte_utilisateur.id_compte
@@ -95,7 +93,7 @@ class Compte_User_DAO(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "DELETE FROM Projet2A.compteutilisateur WHERE id_compte = %(id_compte)s;",
+                        "DELETE FROM projet2a.CompteUtilisateur WHERE id_compte = %(id_compte)s;",
                         {"id_compte": id_compte}
                     )
                     connection.commit()

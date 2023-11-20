@@ -10,7 +10,7 @@ class ComptesUtilisateurs:
                 self.sel = sel.encode('utf-8')  # Assigner le sel récupéré depuis la base de données
             else:
                 self.sel = bcrypt.gensalt()  # Générer un sel pour le nouveau compte
-                self.mot_de_passe = bcrypt.hashpw(mot_de_passe.encode('utf-8'), self.sel)
+                self.mot_de_passe = mot_de_passe.encode('utf-8')
         else:
             self.sel = bcrypt.gensalt()  # Générer un sel pour le nouveau compte
             self.mot_de_passe = bcrypt.hashpw(mot_de_passe.encode('utf-8'), self.sel)
@@ -25,6 +25,8 @@ class ComptesUtilisateurs:
 
         return bcrypt.hashpw(mot_de_passe, self.sel)
 
+    def get_mot_de_passe_hache(self):
+        return self.mot_de_passe  # Cette méthode devrait renvoyer le mot de passe hach
 
     def verifier_mot_de_passe(self, mot_de_passe_clair):
         """Vérifie si le mot de passe en clair correspond au hachage stocké."""
