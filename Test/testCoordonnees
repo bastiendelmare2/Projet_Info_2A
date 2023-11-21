@@ -1,0 +1,30 @@
+from METIER import Coordonnees 
+
+import unittest
+import math
+
+class TestCalculerDistance(unittest.TestCase):
+
+    def setUp(self):
+        # Créer une instance de votre classe 
+        self.coordonnees_source = Coordonnees(latitude=40.7128, longitude=-74.0060)
+
+    def test_calculer_distance_entre_points_identiques(self):
+        # Vérifier si la distance entre un point et lui-même est égale à zéro
+        distance = self.coordonnees_source.calculer_distance(self.coordonnees_source.latitude, self.coordonnees_source.longitude)
+        self.assertEqual(distance, 0.0)
+
+    def test_calculer_distance_entre_points_differents(self):
+        # Vérifier si la distance entre deux points différents est correcte
+        coordonnees_destination = Coordonnees(latitude=34.0522, longitude=-118.2437)
+        distance = self.coordonnees_source.calculer_distance(coordonnees_destination.latitude, coordonnees_destination.longitude)
+        self.assertEqual(distance, 3934.86)
+
+    def test_calculer_distance_entre_points_negatifs(self):
+        #Vérifier si la fonction reste cohérente avec les coordonnées négatives
+        coordonnees_destination = Coordonnees(latitude=-34.0522, longitude=118.2437)
+        distance = self.coordonnees_source.calculer_distance(coordonnees_destination.latitude, coordonnees_destination.longitude)
+        self.assertEqual(distance, 13866.53)
+
+if __name__ == '__main__':
+    unittest.main()
