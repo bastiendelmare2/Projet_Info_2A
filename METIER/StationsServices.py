@@ -19,11 +19,6 @@ class StationsServices:
         # Adresse et ville
         adresse_ville = f"adresse: {self.adresse}, ville: {self.ville}"
 
-        # Horaires
-        horaires_str = "horaires: "
-        for jour in self.horaires.jours:
-            horaires_str += f"Jour: {jour['nom']}, Ouverture: {jour['ouverture']}, Fermeture: {jour['fermeture']} | "
-
         # Services
         services_str = "services: "
         for service in self.services.services:

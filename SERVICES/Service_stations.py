@@ -9,7 +9,7 @@ import json
 
 
 class Service_Station:
-    def trouver_stations(nom_type_carburant, nom_service, ref_latitude, ref_longitude, n, distance_max=None):
+    def trouver_stations(ref_latitude, ref_longitude, nom_type_carburant = None, nom_service = None, n = 3, distance_max=None):  
         liste_stations = StationsServices_Dao.filtre_stations(nom_type_carburant, nom_service)
         start_time = datetime.now()
         Coord = Coordonnees(ref_latitude, ref_longitude)
@@ -47,7 +47,51 @@ class Service_Station:
             "nombre de stations": n
         }
 
-
+    def trouver_stations_adresse(adresse_utilisateur, nom_type_carburant=None, nom_service=None, n=3, distance_max=None):
+        liste_stations = StationsServices_Dao.filtre_stations(nom_type_carburant, nom_service)
+        start_time = datetime.now()
+        
+        # Convertir l'adresse en coordonnées GPS
+        coord = Coordonnees(0, 0)  # Remplacez ces valeurs par des coordonnées par défaut
+        coord_gps = coord.transfo_adresse_GPS(adresse_utilisateur)
+        
+        if coord_gps is None:
+            return [], start_time, {"error": "Adresse non trouvée."}
+        
+        # Utiliser les coordonnées obtenues depuis transfo_adresse_GPS
+        coord = Coordonnees(coord_gps[0], coord_gps[1])  # Utilise les coordonnées dans l'ordre (latitude, longitude)
+        
+        for station in liste_stations:
+            station.distance = Coordonnees.calculer_distance(coord, station.coordonnees[0], station.coordonnees[1])
+        
+        liste_stations.sort(key=lambda x: x.distance)
+        
+        if distance_max is not None:
+            liste_stations = [station for station in liste_stations if station.distance < distance_max]
+        
+        liste_stations = liste_stations[:n]
+        
+        for station in liste_stations:
+            station.ville = html.unescape(station.ville)
+        
+        stations_list = []
+        
+        for station in liste_stations:
+            station_info = {
+                "id_stations": station.id_stations,
+                "adresse": station.adresse,
+                "ville": station.ville,
+                "distance": station.distance,
+                "coordonnees": station.coordonnees,
+                "services": station.services,
+                "prixcarburants": station.prixcarburants
+            }
+            stations_list.append(station_info)
+        
+        return stations_list, start_time, {
+            "position (longitude, latitude)": adresse_utilisateur,
+            "nombre de stations": n
+        }
 
     @staticmethod
     def stations_services_par_station_preferee(id_stations_pref):
@@ -93,13 +137,13 @@ class Service_Station:
         # Utiliser la méthode DAO pour trouver toutes les stations préférées de l'utilisateur
         stations_preferees = StationsPreferees_Dao.trouver_par_id(id_compte)
         
-        # Préparer la réponse JSON avec l'identifiant de compte
+        # Préparer la réponse avec l'identifiant de compte
         response_dict = {
             "id_compte": id_compte,
             "stations_preferees": stations_preferees
         }
         
-        # Convertir les résultats en un format JSON
-        result_json = json.dumps(response_dict, indent=2) if stations_preferees else json.dumps({"error": "Aucune station préférée trouvée pour cet utilisateur.", "id_compte": id_compte})
+        if not stations_preferees:
+            response_dict["error"] = "Aucune station préférée trouvée pour cet utilisateur."
         
-        return result_json
+        return response_dict
