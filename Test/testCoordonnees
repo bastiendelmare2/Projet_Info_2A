@@ -1,4 +1,5 @@
 from METIER.Coordonnees import Coordonnees 
+from unittest.mock import patch
 
 import unittest
 import math
@@ -24,6 +25,38 @@ class TestCalculerDistance(unittest.TestCase):
         coordonnees_destination = Coordonnees(latitude=-34.0522, longitude=-118.2437)
         distance = self.coordonnees_source.calculer_distance(coordonnees_destination.longitude, coordonnees_destination.latitude)
         self.assertEqual(distance, 18428.23)
+
+
+class TestTransfoAdresseGPS(unittest.TestCase):
+
+    @patch('METIER.Coordonnees.Nominatim')
+    def test_transfo_adresse_GPS_adresse_valide(self, mock_nominatim):
+        # Configuration du mock
+        mock_instance = mock_nominatim.return_value
+        mock_instance.geocode.return_value.latitude = 40.7128
+        mock_instance.geocode.return_value.longitude = -74.0060
+        NewYork = Coordonnees(40.7128, -74.0060)
+
+        # Appel de la fonction avec une adresse valide
+        result = NewYork.transfo_adresse_GPS("New York, USA")
+
+        # Vérification des résultats
+        self.assertEqual(result, (40.7128, -74.0060))
+
+    @patch('METIER.Coordonnees.Nominatim')
+    def test_transfo_adresse_GPS_adresse_invalide(self, mock_nominatim):
+        # Configuration du mock pour simuler une adresse non trouvée
+        mock_instance = mock_nominatim.return_value
+        mock_instance.geocode.return_value = None
+        FausseAdresse = Coordonnees(None, None)
+
+        # Appel de la fonction avec une adresse invalide
+        result = FausseAdresse.transfo_adresse_GPS("Adresse Inexistante")
+
+        # Vérification des résultats
+        self.assertIsNone(result)
+      
+
 
 if __name__ == '__main__':
     unittest.main()
