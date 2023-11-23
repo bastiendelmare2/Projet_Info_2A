@@ -1,4 +1,7 @@
 import math
+
+from geopy.geocoders import Nominatim
+
 class Coordonnees:
     def __init__(self, latitude, longitude):
         self.latitude = latitude
@@ -34,4 +37,25 @@ class Coordonnees:
         distance = rayon_terre * c
 
         return round(distance, 2)
+
+   
+    def transfo_adresse_GPS(self, adresse):
+        # Demandez à l'utilisateur d'entrer une adresse
+        address = str(adresse)
+
+        # Créez un géocodeur avec le service Nominatim
+        geocoder = Nominatim(user_agent="Mon application Python")
+
+        # Géocodez l'adresse
+        location = geocoder.geocode(address)
+
+        # Obtenez les coordonnées GPS
+        if location:
+            latitude, longitude = location.latitude, location.longitude
+            return latitude, longitude
+        else:
+            print("Adresse non trouvée.")
+            return None
+
+
 

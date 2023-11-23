@@ -9,27 +9,31 @@ import uvicorn
 from SERVICES.Service_stations import Service_Station
 from BDD.DAO_StationsServices import StationsServices_Dao
 from SERVICES.Service_compte import ServiceCompte
+from typing import Optional
 
 # On instancie le webservice
 app = FastAPI()
 
 
-# Définition du endpoint get /todo
 @app.get("/trouver/stations/plus/proche")
-def stations_plus_proche_station (nom_type_carburant : str , nom_service : str, ref_latitude: float, ref_longitude : float, n : int, distance_max: float):
-    return Service_Station.trouver_stations(nom_type_carburant, nom_service, ref_latitude, ref_longitude, n, distance_max)
+def stations_plus_proche_station(ref_latitude: float, ref_longitude: float, nom_type_carburant: Optional[str] = None, nom_service: Optional[str] = None, n: Optional[int] = 3, distance_max: Optional[float] = None):
+    return Service_Station.trouver_stations(ref_latitude, ref_longitude,nom_type_carburant, nom_service, n, distance_max)
+
+@app.get("/trouver/stations/plus/proche/adresse")
+def stations_plus_proche_station_adresse(adresse: str, nom_type_carburant: Optional[str] = None, nom_service: Optional[str] = None, n: Optional[int] = 3, distance_max: Optional[float] = None):
+    return Service_Station.trouver_stations_adresse(adresse, nom_type_carburant, nom_service, n ,distance_max)
 
 @app.get("/stations/par/station/pref")
 def stations_par_station_pref (id_stations_pref: int):
     return Service_Station.stations_services_par_station_preferee(id_stations_pref)
 
-@app.post("/enleve/station/de/station/pref")
+@app.delete("/enleve/station/de/station/pref")
 def enlever_station_de_station_pref (id_stations_pref : int, id_stations: int):
-    return Service_Station.enlever_station_de_station_preferee(id_stations_pref, id_stations)
+    return Service_Station.enlever_station_de_station_preferee(id_stations, id_stations_pref)
 
 @app.post("/ajouter/station/à/station/pref")
 def enlever_station_a_station_pref (id_stations_pref : int, id_stations: int):
-    return Service_Station.ajouter_station_a_station_preferee(id_stations_pref, id_stations)
+    return Service_Station.ajouter_station_a_station_preferee(id_stations, id_stations_pref)
 
 @app.post("/créer/station/pref")
 def creer_station_pref(id_compte : int, nom_station : str, id_stations_pref : int):
