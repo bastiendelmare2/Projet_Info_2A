@@ -1,10 +1,5 @@
-from SERVICES.Service_stations import Service_Station
-from METIER.Coordonnees import Coordonnees
+from SERVICES.Service_compte import ServiceCompte
+from METIER.ComptesUtilisateurs import ComptesUtilisateurs
 
-coord = Coordonnees(0, 0)  # Remplacez ces valeurs par des coordonnées par défaut
-coord_gps = coord.transfo_adresse_GPS("124 avenue Jean Jaurès Clamart")
 
-print(coord_gps)
-
-print(Service_Station.trouver_stations_adresse("124 avenue Jean Jaurès Clamart"))
-
+ServiceCompte.supprimer_compte_utilisateur(300, "ducul")

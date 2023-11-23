@@ -36,3 +36,11 @@ class ServiceCompte:
             # Mettre à jour le mot de passe dans la base de données via la DAO
             return Compte_User_DAO.modifier_mot_de_passe(compte, nouveau_mdp)
         return False
+
+    @staticmethod
+    def supprimer_compte_utilisateur(id_compte: int, identifiant: str) -> bool:
+        """Supprime un compte utilisateur."""
+        compte = Compte_User_DAO.get(id_compte)
+        if compte and compte.identifiant == identifiant:
+            return Compte_User_DAO.supprimer_compte_utilisateur(id_compte, identifiant)
+        return False

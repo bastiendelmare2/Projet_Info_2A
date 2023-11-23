@@ -4,7 +4,8 @@ from utils.singleton import Singleton
 from METIER.PrixCarburants import PrixCarburants
 
 class PrixCarburantsDAO(metaclass=Singleton):
-    def ajouter_prix_carburant(self, id_type_carburant, id_stations, prix):
+    @staticmethod
+    def ajouter_prix_carburant(id_type_carburant, id_stations, prix):
         """Ajouter un prix de carburant dans la base de données
 
         Parameters
@@ -41,41 +42,44 @@ class PrixCarburantsDAO(metaclass=Singleton):
 
         return created
 
-        def supprimer_prix_carburant(self, id_):
-            """Supprimer un prix de carburant de la base de données
+    @staticmethod
+    def supprimer_prix_carburant(type_carburant_id):
+        """Supprimer un prix de carburant de la base de données
 
-            Parameters
-            ----------
-            type_carburant_id : int
-                ID du type de carburant
-            station_service_id : int
-                ID de la station de service
+        Parameters
+        ----------
+        type_carburant_id : int
+            ID du type de carburant
+        station_service_id : int
+            ID de la station de service
 
-            Returns
-            -------
-            deleted : bool
-                True si le prix de carburant a été supprimé avec succès, False sinon
-            """
-            deleted = False
+        Returns
+        -------
+        deleted : bool
+            True si le prix de carburant a été supprimé avec succès, False sinon
+        """
+        deleted = False
 
-            try:
-                with DBConnection().connection as connection:
-                    with connection.cursor() as cursor:
-                        cursor.execute(
-                            "DELETE FROM Projet2A.PrixCarburants "
-                            "WHERE type_carburant_id = %(type_carburant_id)s AND station_service_id = %(station_service_id)s;",
-                            {
-                                "type_carburant_id": type_carburant_id,
-                                "station_service_id": station_service_id,
-                            },
-                        )
-                        deleted = True
-            except Exception as e:
-                print(e)
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "DELETE FROM Projet2A.PrixCarburants "
+                        "WHERE type_carburant_id = %(type_carburant_id)s AND station_service_id = %(station_service_id)s;",
+                        {
+                            "type_carburant_id": type_carburant_id,
+                            "station_service_id": station_service_id,
+                        },
+                    )
+                    deleted = True
+        except Exception as e:
+            print(e)
 
-            return deleted
+        return deleted
 
-    def prix_carburant_dans_station(self, id_type_carburant, id_stations):
+
+    @staticmethod
+    def prix_carburant_dans_station(id_type_carburant, id_stations):
         """Trouver le prix d'un type de carburant dans une station de service
 
         Parameters
@@ -109,7 +113,8 @@ class PrixCarburantsDAO(metaclass=Singleton):
 
         return prix
 
-    def stations_service_pour_type_carburant(self, id_type_carburant):
+    @staticmethod
+    def stations_service_pour_type_carburant(id_type_carburant):
         """Trouver les stations de service pour un type de carburant donné
 
         Parameters

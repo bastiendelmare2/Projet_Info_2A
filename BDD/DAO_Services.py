@@ -3,7 +3,8 @@ from utils.singleton import Singleton
 
 
 class Services_Dao(metaclass=Singleton):
-    def ajouter_services(self, id_service, nom_service) -> bool:
+    @staticmethod
+    def ajouter_services(id_service, nom_service) -> bool:
         """Ajout d'une Station Service dans la BDD
 
         Parameters

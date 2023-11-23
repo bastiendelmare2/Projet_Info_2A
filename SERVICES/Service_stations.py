@@ -93,6 +93,33 @@ class Service_Station:
             "nombre de stations": n
         }
 
+
+    @staticmethod
+    def trouver_stations_par_ville(ville, nom_type_carburant=None, nom_service=None, ):
+        try:
+            liste_stations = StationsServices_Dao.filtre_stations(ville = ville, nom_type_carburant= nom_type_carburant, nom_service= nom_service)
+            stations_list = []
+            
+            for station in liste_stations:
+                # Vérifier si la ville correspond
+                if ville and station.ville != ville:
+                    continue
+                
+                station_info = {
+                    "id_stations": station.id_stations,
+                    "adresse": station.adresse,
+                    "ville": station.ville,
+                    "services": station.services,
+                    "prixcarburants": station.prixcarburants
+                }
+                stations_list.append(station_info)
+            
+            return stations_list
+        except Exception as e:
+            print("Erreur lors de la récupération des stations-services par ville :", e)
+            return []
+
+
     @staticmethod
     def stations_services_par_station_preferee(id_stations_pref):
         try:

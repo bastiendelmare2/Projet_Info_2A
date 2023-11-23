@@ -16,6 +16,7 @@ from BDD.DAO_PrixCarburants import PrixCarburantsDAO
 from BDD.DAO_Services import Services_Dao
 from BDD.DAO_Stations_to_Services import StationsToServicesDAO
 from BDD.DAO_Coordonnees import Coordonnees_Dao
+from BDD.DAO_Reset_Tables import SuppressionDonnees
 
 class Alimentation:
     @staticmethod
@@ -38,14 +39,6 @@ class Alimentation:
                 prix = float(prix_element.get("valeur"))
                 carburant = PrixCarburants(type_carburant=typecarburants, prix=prix)
                 carburants.append(carburant)
-            horaires = Horaires()
-            for jour_element in pdv.findall(".//jour"):
-                nom = jour_element.get("nom")
-                horaire_element = jour_element.find("horaire")
-                if horaire_element is not None:
-                    ouverture = horaire_element.get("ouverture")
-                    fermeture = horaire_element.get("fermeture")
-                    horaires.ajouter_jour(identifiant, nom, ouverture, fermeture)
             services = Services()
             for service_element in pdv.find("services").findall("service"):
                 service_name = service_element.text
@@ -55,7 +48,6 @@ class Alimentation:
                 adresse=adresse,
                 ville=ville,
                 prixcarburants=carburants,
-                horaires=horaires,
                 coordonnees=coordonnees,
                 services=services,
             )
@@ -221,17 +213,6 @@ class Alimentation:
             longitude = round(float(coordinates['longitude']), 6)
             Coordonnees_Dao.ajouter_coordonnees(id_stations=station_id, latitude=latitude, longitude=longitude)
 
-    @staticmethod
-    def alimenter_table_horaires(stations_service_list):
-        next_horaire_id = 1
-        horaires_dict = {}
-
-        for station_service in stations_service_list:
-            for horaire in station_service.horaires.jours:
-                horaire_name = f"{horaire['nom']} ({horaire['ouverture']} - {horaire['fermeture']})"
-                if horaire_name not in horaires_dict:
-                    horaires_dict[next_horaire_id] = horaire_name
-                    next_horaire_id += 1
 
     @staticmethod
     def alimenter_table_services_from_xml(chemin):
@@ -279,5 +260,7 @@ class Alimentation:
         # Alimenter la table des Coordonnees
         Alimentation.alimenter_table_coordonnees(stations_service_list)
 
-        # Alimenter la table des Horaires
-        Alimentation.alimenter_table_horaires(stations_service_list)
+    def reset_de_la_table():
+        SuppressionDonnees.supprimer_donnees_tables()
+        chemin = Alimentation.XML()
+        Alimentation.alimenter_toutes_tables(chemin)
