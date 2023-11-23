@@ -1,5 +1,8 @@
 Voici les différentes modules python à installer pour le bon fonctionnement du programme:
 - dotenv : écrire dans le terminal 'pip install python-dotenv'
 - bcrypt
-- inquirer : Ne permet que de visiualiser le moodèle des views. Elles n'ont pas été implémenté 
+- geopy
+- pip install schedule
+- inquirer : Ne permet que de visiualiser le moodèle des views. Elles n ont pas été implémenté 
 au final par manque de temps.
+- geopy
