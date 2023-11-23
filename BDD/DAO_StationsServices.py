@@ -108,7 +108,7 @@ class StationsServices_Dao(metaclass=Singleton):
         return res > 0
     
     @staticmethod
-    def filtre_stations(nom_type_carburant=None, nom_service=None):
+    def filtre_stations(nom_type_carburant=None, nom_service=None, ville=None):
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -133,6 +133,10 @@ class StationsServices_Dao(metaclass=Singleton):
                     if nom_service:
                         conditions.append("s.nom_service = %(nom_service)s")
                         params["nom_service"] = nom_service
+
+                    if ville:
+                        conditions.append("ss.ville = %(ville)s")
+                        params["ville"] = ville
 
                     if conditions:
                         query += " WHERE " + " AND ".join(conditions)
@@ -173,7 +177,6 @@ class StationsServices_Dao(metaclass=Singleton):
         except Exception as e:
             print("Erreur lors de la récupération des stations-services :", e)
             return []
-
 
 
 

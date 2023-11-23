@@ -87,17 +87,30 @@ class Compte_User_DAO(metaclass=Singleton):
             return False
 
     @staticmethod
-    def supprimer_compte_utilisateur(id_compte: int) -> bool:
+    def supprimer_compte_utilisateur(id_compte: int, identifiant: str) -> bool:
         """Supprime un compte utilisateur de la base de données."""
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "DELETE FROM projet2a.CompteUtilisateur WHERE id_compte = %(id_compte)s;",
-                        {"id_compte": id_compte}
-                    )
-                    connection.commit()
-                    return True
-        except Exception as e:
-            print(e)
+
+        # Récupérer les informations du compte utilisateur pour vérification
+        compte = Compte_User_DAO.get(id_compte)
+        
+        if compte:
+            # Vérifier seulement l'identifiant
+            if compte.identifiant == identifiant:
+                try:
+                    with DBConnection().connection as connection:
+                        with connection.cursor() as cursor:
+                            cursor.execute(
+                                "DELETE FROM projet2a.CompteUtilisateur WHERE id_compte = %(id_compte)s;",
+                                {"id_compte": id_compte}
+                            )
+                            connection.commit()
+                            return True
+                except Exception as e:
+                    print(e)
+                    return False
+            else:
+                # Identifiant incorrect
+                return False
+        else:
+            # Compte introuvable
             return False

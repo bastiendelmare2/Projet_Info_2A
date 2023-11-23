@@ -5,8 +5,8 @@ DROP TABLE IF EXISTS projet2a.StationsServices CASCADE
 
 CREATE TABLE projet2a.StationsServices (
     id_stations INT PRIMARY KEY,
-    adresse VARCHAR(255) NOT NULL,
-    ville VARCHAR(255) NOT NULL
+    adresse VARCHAR(255),
+    ville VARCHAR(255)
 );
 
 
@@ -28,8 +28,9 @@ DROP TABLE IF EXISTS projet2a.CompteUtilisateur CASCADE
 
 CREATE TABLE projet2a.CompteUtilisateur (
     id_compte SERIAL PRIMARY KEY,
-    mdp VARCHAR(255) NOT NULL,
-    identifiant VARCHAR(255) NOT NULL
+    mot_de_passe VARCHAR(255) NOT NULL,
+    identifiant VARCHAR(255) NOT null,
+    sel VARCHAR(225)
 );
 
 
@@ -52,7 +53,7 @@ CREATE TABLE projet2a.PrixCarburants (
 ----------------------------------------------------------------------
 ---  SERVICES ---
 ----------------------------------------------------------------------
-DROP TABLE IF EXISTS projet2a.Services
+DROP TABLE IF EXISTS projet2a.Services CASCADE
 
 CREATE TABLE projet2a.Services (
     id_service INT PRIMARY KEY,
