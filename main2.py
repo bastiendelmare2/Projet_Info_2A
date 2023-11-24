@@ -1,5 +1,3 @@
-from SERVICES.Service_compte import ServiceCompte
-from METIER.ComptesUtilisateurs import ComptesUtilisateurs
+from BDD.DAO_Services import Services_Dao
 
-
-ServiceCompte.supprimer_compte_utilisateur(300, "ducul")
+print(Services_Dao.get_all_services())

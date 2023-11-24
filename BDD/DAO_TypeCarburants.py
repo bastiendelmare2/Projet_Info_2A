@@ -34,3 +34,27 @@ class TypeCarburantDao(metaclass=Singleton):
                     )
         except Exception as e:
             print(e)
+
+    @staticmethod
+    def get_all_type_carburants() -> list:
+        """Récupère tous les types de carburant présents dans la table 'TypeCarburants'
+
+        Returns
+        -------
+        type_carburants_list : list
+            Liste des types de carburant présents dans la table
+        """
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute("SELECT * FROM projet2a.TypeCarburants;")
+                    type_carburants_list = []
+                    for carburant_info in cursor.fetchall():
+                        carburant_dict = {
+                            "id_typecarburants": carburant_info['id_typecarburants'],
+                            "nom_type_carburants": carburant_info['nom_type_carburants'],
+                        }
+                        type_carburants_list.append(carburant_dict)
+                    return type_carburants_list
+        except Exception as e:
+            print(e)

@@ -12,7 +12,28 @@ class API:
     def __init__(self):
         self.app = FastAPI()
 
+        @self.app.get("/get_all_services")
+        def get_all_services():
+            try:
+                services = Service_Station.get_all_services()
+                if services:
+                    return services
+                else:
+                    return "Aucun service trouvé."
+            except Exception as e:
+                return f"Erreur lors de la récupération des services : {e}"
         
+        @self.app.get("/get_all_type_carburants")
+        def get_all_type_carburants():
+            try:
+                type_carburants = Service_Station.get_all_type_carburants()
+                if type_carburants:
+                    return type_carburants
+                else:
+                    return "Aucun type de carburant trouvé."
+            except Exception as e:
+                return f"Erreur lors de la récupération des types de carburant : {e}"
+
         @self.app.get("/trouver/stations/plus/proche")
         def stations_plus_proche_station(ref_latitude: float, ref_longitude: float, nom_type_carburant: Optional[str] = None, nom_service: Optional[str] = None, n: Optional[int] = 3, distance_max: Optional[float] = None):
             return Service_Station.trouver_stations(ref_latitude, ref_longitude,nom_type_carburant, nom_service, n, distance_max)

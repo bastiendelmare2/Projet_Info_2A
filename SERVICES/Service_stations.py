@@ -2,6 +2,8 @@ from datetime import datetime
 from METIER.Coordonnees import Coordonnees
 from BDD.DAO_StationsPreferees import StationsPreferees_Dao
 from BDD.DAO_Stations_to_StationsPreferees import StationsToStationsPrefereesDAO
+from BDD.DAO_Services import Services_Dao
+from BDD.DAO_TypeCarburants import TypeCarburantDao
 from METIER.StationsPreferees import StationsPreferees
 from BDD.DAO_StationsServices import StationsServices_Dao
 import html
@@ -174,3 +176,19 @@ class Service_Station:
             response_dict["error"] = "Aucune station préférée trouvée pour cet utilisateur."
         
         return response_dict
+
+    @staticmethod
+    def get_all_services():
+        try:
+            return Services_Dao.get_all_services()
+        except Exception as e:
+            print("Erreur lors de la récupération de tous les services :", e)
+            return []
+
+    @staticmethod
+    def get_all_type_carburants():
+        try:
+            return TypeCarburantDao.get_all_type_carburants()
+        except Exception as e:
+            print("Erreur lors de la récupération de tous les types de carburant :", e)
+            return []
