@@ -1,26 +1,19 @@
 from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
 
-from METIER.PrixCarburants import PrixCarburants
-
 class PrixCarburantsDAO(metaclass=Singleton):
     @staticmethod
     def ajouter_prix_carburant(id_type_carburant, id_stations, prix):
-        """Ajouter un prix de carburant dans la base de données
+        """Ajoute un prix de carburant dans la base de données.
 
-        Parameters
-        ----------
-        type_carburant_id : int
-            ID du type de carburant
-        station_service_id : int
-            ID de la station de service
-        prix : float
-            Prix du carburant dans la station de service
-
-        Returns
-        -------
-        created : bool
-            True si le prix de carburant a été créé avec succès, False sinon
+        :param id_type_carburant: ID du type de carburant.
+        :type id_type_carburant: int
+        :param id_stations: ID de la station de service.
+        :type id_stations: int
+        :param prix: Prix du carburant dans la station de service.
+        :type prix: float
+        :return: True si le prix de carburant a été créé avec succès, False sinon.
+        :rtype: bool
         """
         created = False
 
@@ -44,19 +37,12 @@ class PrixCarburantsDAO(metaclass=Singleton):
 
     @staticmethod
     def supprimer_prix_carburant(type_carburant_id):
-        """Supprimer un prix de carburant de la base de données
+        """Supprime un prix de carburant de la base de données.
 
-        Parameters
-        ----------
-        type_carburant_id : int
-            ID du type de carburant
-        station_service_id : int
-            ID de la station de service
-
-        Returns
-        -------
-        deleted : bool
-            True si le prix de carburant a été supprimé avec succès, False sinon
+        :param type_carburant_id: ID du type de carburant.
+        :type type_carburant_id: int
+        :return: True si le prix de carburant a été supprimé avec succès, False sinon.
+        :rtype: bool
         """
         deleted = False
 
@@ -65,10 +51,9 @@ class PrixCarburantsDAO(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "DELETE FROM Projet2A.PrixCarburants "
-                        "WHERE type_carburant_id = %(type_carburant_id)s AND station_service_id = %(station_service_id)s;",
+                        "WHERE type_carburant_id = %(type_carburant_id)s;",
                         {
                             "type_carburant_id": type_carburant_id,
-                            "station_service_id": station_service_id,
                         },
                     )
                     deleted = True
@@ -77,22 +62,16 @@ class PrixCarburantsDAO(metaclass=Singleton):
 
         return deleted
 
-
     @staticmethod
     def prix_carburant_dans_station(id_type_carburant, id_stations):
-        """Trouver le prix d'un type de carburant dans une station de service
+        """Trouve le prix d'un type de carburant dans une station de service.
 
-        Parameters
-        ----------
-        type_carburant_id : int
-            ID du type de carburant
-        station_service_id : int
-            ID de la station de service
-
-        Returns
-        -------
-        prix : float
-            Prix du type de carburant dans la station de service
+        :param id_type_carburant: ID du type de carburant.
+        :type id_type_carburant: int
+        :param id_stations: ID de la station de service.
+        :type id_stations: int
+        :return: Prix du type de carburant dans la station de service.
+        :rtype: float
         """
         prix = None
 
@@ -100,11 +79,11 @@ class PrixCarburantsDAO(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT prix FROM Projet2A.PrixCarburants WHERE type_carburant_id = %(id_type_carburant)s "
-                        "AND station_service_id = %(id_stations)s;",
+                        "SELECT prix FROM Projet2A.PrixCarburants WHERE id_type_carburant = %(id_type_carburant)s "
+                        "AND id_stations = %(id_stations)s;",
                         {
-                            "type_carburant_id": type_carburant_id,
-                            "station_service_id": station_service_id,
+                            "id_type_carburant": id_type_carburant,
+                            "id_stations": id_stations,
                         },
                     )
                     prix = cursor.fetchone()
@@ -115,17 +94,12 @@ class PrixCarburantsDAO(metaclass=Singleton):
 
     @staticmethod
     def stations_service_pour_type_carburant(id_type_carburant):
-        """Trouver les stations de service pour un type de carburant donné
+        """Trouve les stations de service pour un type de carburant donné.
 
-        Parameters
-        ----------
-        type_carburant_id : int
-            ID du type de carburant
-
-        Returns
-        -------
-        stations : list
-            Liste des ID des stations de service offrant le type de carburant donné
+        :param id_type_carburant: ID du type de carburant.
+        :type id_type_carburant: int
+        :return: Liste des ID des stations de service offrant le type de carburant donné.
+        :rtype: list
         """
         stations = []
 
@@ -133,9 +107,9 @@ class PrixCarburantsDAO(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT station_service_id FROM Projet2A.PrixCarburants WHERE type_carburant_id = %(type_carburant_id)s;",
+                        "SELECT id_stations FROM Projet2A.PrixCarburants WHERE id_type_carburant = %(id_type_carburant)s;",
                         {
-                            "type_carburant_id": type_carburant_id,
+                            "id_type_carburant": id_type_carburant,
                         },
                     )
                     stations = [row[0] for row in cursor.fetchall()]

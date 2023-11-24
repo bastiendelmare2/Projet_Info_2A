@@ -4,6 +4,7 @@ from utils.singleton import Singleton
 class SuppressionDonnees(metaclass=Singleton):
     @staticmethod
     def supprimer_donnees_tables():
+        # Liste des tables à vider
         tables = [
             "projet2a.Stations_to_Services",
             "projet2a.PrixCarburants",
@@ -17,7 +18,7 @@ class SuppressionDonnees(metaclass=Singleton):
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    # D'abord, supprimer les données dans les tables qui n'ont pas de dépendances
+                    # Supprimer les données dans les tables sans dépendances
                     for table in tables:
                         cursor.execute(f"DELETE FROM {table};")
 

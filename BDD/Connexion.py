@@ -1,5 +1,4 @@
 import os
-
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from utils.singleton import Singleton
@@ -8,11 +7,16 @@ from dotenv import load_dotenv, find_dotenv
 
 class DBConnection(metaclass=Singleton):
     """
-    Technical class to open only one connection to the DB.
+    Classe technique pour ouvrir une seule connexion à la base de données.
     """
 
     def __init__(self):
-        # Open the connection.
+        """
+        Initialise une connexion à la base de données en utilisant les variables d'environnement.
+
+        :raises: psycopg2.OperationalError si la connexion à la base de données échoue.
+        """
+        # Ouvre la connexion.
         load_dotenv(find_dotenv())
         self.__connection = psycopg2.connect(
             host=os.environ["HOST"],
@@ -26,8 +30,8 @@ class DBConnection(metaclass=Singleton):
     @property
     def connection(self):
         """
-        return the opened connection.
+        Renvoie la connexion ouverte.
 
-        :return: the opened connection.
+        :return: La connexion ouverte.
         """
         return self.__connection

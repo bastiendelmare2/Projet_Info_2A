@@ -3,20 +3,23 @@ from utils.singleton import Singleton
 import json
 from datetime import datetime
 
-from METIER.StationsPreferees import StationsPreferees  # Make sure to import the correct class
+from METIER.StationsPreferees import StationsPreferees  # Assure-toi d'importer la classe correcte
 
 class StationsPreferees_Dao(metaclass=Singleton):
     @staticmethod
     def ajouter_StationsPreferee(stations_pref: StationsPreferees) -> bool:
-        """Ajout d'une Station Preferee dans la BDD 
+        """
+        Ajout d'une Station Preferee dans la BDD.
 
         Parameters
         ----------
         stations_pref : StationsPreferees
+            Instance de la station préférée à ajouter.
 
         Returns
         -------
         created : bool
+            True si l'ajout a été effectué avec succès, False sinon.
         """
 
         res = None
@@ -46,15 +49,18 @@ class StationsPreferees_Dao(metaclass=Singleton):
 
     @staticmethod
     def trouver_par_id(id_compte) -> StationsPreferees:
-        """Trouver une Station Preferee par id
+        """
+        Trouve une Station Preferee par identifiant de compte.
 
         Parameters
         ----------
-        id_stations_pref : int
+        id_compte : int
+            Identifiant du compte associé à la station préférée.
 
         Returns
         -------
-        stations_pref : StationsPreferees
+        stations_pref : StationsPreferees or None
+            Informations de la station préférée si trouvée, sinon None.
         """
         try:
             with DBConnection().connection as connection:
@@ -74,18 +80,19 @@ class StationsPreferees_Dao(metaclass=Singleton):
 
     @staticmethod
     def delete(id_stations_pref) -> bool:
-        """Deleting a station preferee from the database
+        """
+        Supprime une station préférée de la base de données.
 
         Parameters
         ----------
         id_stations_pref : int
-            id of the station preferee to be deleted from the database
+            Identifiant de la station préférée à supprimer.
 
         Returns
         -------
-        True if the station preferee has been correctly deleted
+        deleted : bool
+            True si la station préférée a été supprimée avec succès, False sinon.
         """
-
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -104,6 +111,22 @@ class StationsPreferees_Dao(metaclass=Singleton):
 
     @staticmethod
     def stations_services_par_station_preferee(id_stations_pref):
+        """
+        Récupère les stations de services associées à une station préférée ainsi que leurs services et prix de carburants.
+
+        Parameters
+        ----------
+        id_stations_pref : int
+            Identifiant de la station préférée.
+
+        Returns
+        -------
+        stations_list : list
+            Liste des informations des stations associées à la station préférée.
+        
+        details : dict
+            Informations supplémentaires sur la requête.
+        """
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:

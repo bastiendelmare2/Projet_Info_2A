@@ -1,21 +1,18 @@
 from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
 
-
 class Services_Dao(metaclass=Singleton):
     @staticmethod
     def ajouter_services(id_service, nom_service) -> bool:
-        """Ajout d'une Station Service dans la BDD
+        """Ajoute un service dans la base de données.
 
-        Parameters
-        ----------
-         Services: Services
-
-        Returns
-        -------
-        created : bool
-        """,
-
+        :param id_service: Identifiant du service.
+        :type id_service: int
+        :param nom_service: Nom du service.
+        :type nom_service: str
+        :return: True si l'ajout a été réalisé avec succès, False sinon.
+        :rtype: bool
+        """
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -27,22 +24,19 @@ class Services_Dao(metaclass=Singleton):
                             "nom_service": nom_service,
                         },
                     )
+                    return True
         except Exception as e:
             print(e)
+            return False
 
     @staticmethod
     def get(id_service) -> dict:
-        """Récupère les informations d'un service à partir de son ID
+        """Récupère les informations d'un service à partir de son ID.
 
-        Parameters
-        ----------
-        id_service : int
-            Identifiant du service à récupérer
-
-        Returns
-        -------
-        service_info : dict or None
-            Informations du service si trouvé, sinon None
+        :param id_service: Identifiant du service à récupérer.
+        :type id_service: int
+        :return: Informations du service sous forme de dictionnaire si trouvé, sinon None.
+        :rtype: dict or None
         """
         try:
             with DBConnection().connection as connection:
@@ -68,12 +62,10 @@ class Services_Dao(metaclass=Singleton):
 
     @staticmethod
     def get_all_services() -> list:
-        """Récupère tous les services présents dans la table 'Services'
+        """Récupère tous les services présents dans la table 'Services'.
 
-        Returns
-        -------
-        services_list : list
-            Liste des services présents dans la table
+        :return: Liste des services présents dans la table.
+        :rtype: list[dict]
         """
         try:
             with DBConnection().connection as connection:
@@ -84,6 +76,7 @@ class Services_Dao(metaclass=Singleton):
                         service_dict = {
                             "id_service": service_info['id_service'],
                             "nom_service": service_info['nom_service'],
+                            # Ajoutez d'autres colonnes de la table si nécessaire
                         }
                         services_list.append(service_dict)
                     return services_list

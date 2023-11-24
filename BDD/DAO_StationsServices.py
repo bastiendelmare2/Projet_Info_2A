@@ -1,26 +1,25 @@
-import pandas as pd
-import json
-import html
-from datetime import datetime
-from METIER.Coordonnees import Coordonnees
 from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
-
+import json
+from datetime import datetime
+from METIER.Coordonnees import Coordonnees
 from METIER.StationsServices import StationsServices
-
 
 class StationsServices_Dao(metaclass=Singleton):
     @staticmethod
     def ajouter_StationsServices(StationsServices: StationsServices) -> bool:
-        """Ajout d'une Station Service dans la BDD 
+        """
+        Ajout d'une Station Service dans la BDD.
 
         Parameters
         ----------
          Stations Services: StationsServices
+            Instance de la station service à ajouter.
 
         Returns
         -------
         created : bool
+            True si l'ajout a été effectué avec succès, False sinon.
         """
 
         res = None
@@ -50,16 +49,18 @@ class StationsServices_Dao(metaclass=Singleton):
 
     @staticmethod
     def trouver_par_id(id) -> StationsServices:
-        """Touver une STations Service par id
+        """
+        Trouver une Station Service par id.
 
         Parameters
         ----------
         id : int
+            Identifiant de la station service à rechercher.
 
         Returns
         -------
         StationsServices : StationsServices
-
+            Informations de la station service trouvée.
         """
         try:
             with DBConnection().connection as connection:
@@ -79,16 +80,17 @@ class StationsServices_Dao(metaclass=Singleton):
 
     @staticmethod
     def delete(StationsServices) -> bool:
-        """Deleting a user from the database
+        """
+        Supprime une station service de la base de données.
 
         Parameters
         ----------
-        user : User
-            user to be deleted from the database
+        StationsServices : StationsServices
+            Station service à supprimer.
 
         Returns
         -------
-            True if the user has been correctly deleted
+            True si la station service a été supprimée avec succès, False sinon.
         """
 
         try:
@@ -109,6 +111,23 @@ class StationsServices_Dao(metaclass=Singleton):
     
     @staticmethod
     def filtre_stations(nom_type_carburant=None, nom_service=None, ville=None):
+        """
+        Filtrer les stations en fonction du type de carburant, du service ou de la ville.
+
+        Parameters
+        ----------
+        nom_type_carburant : str, optional
+            Nom du type de carburant.
+        nom_service : str, optional
+            Nom du service.
+        ville : str, optional
+            Nom de la ville.
+
+        Returns
+        -------
+        list
+            Liste des stations filtrées.
+        """
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -177,6 +196,3 @@ class StationsServices_Dao(metaclass=Singleton):
         except Exception as e:
             print("Erreur lors de la récupération des stations-services :", e)
             return []
-
-
-

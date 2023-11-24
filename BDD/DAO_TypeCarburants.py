@@ -4,19 +4,21 @@ from utils.singleton import Singleton
 
 class TypeCarburantDao(metaclass=Singleton):
     @staticmethod
-    def ajouter_TypeCarburant(id_typecarburants, nom_type_carburants)-> bool:
-        """Ajout d'un type de carburant dans la BDD
+    def ajouter_TypeCarburant(id_typecarburants, nom_type_carburants) -> bool:
+        """
+        Ajout d'un type de carburant dans la BDD.
 
         Parameters
         ----------
-        id_typecarburant : int
-            Identifiant du type de carburant
-        type_carburant : str
-            Nom du type de carburant
+        id_typecarburants : int
+            Identifiant du type de carburant.
+        nom_type_carburants : str
+            Nom du type de carburant.
 
         Returns
         -------
         created : bool
+            True si l'ajout a été effectué avec succès, False sinon.
         """
 
         res = None
@@ -37,12 +39,13 @@ class TypeCarburantDao(metaclass=Singleton):
 
     @staticmethod
     def get_all_type_carburants() -> list:
-        """Récupère tous les types de carburant présents dans la table 'TypeCarburants'
+        """
+        Récupère tous les types de carburant présents dans la table 'TypeCarburants'.
 
         Returns
         -------
         type_carburants_list : list
-            Liste des types de carburant présents dans la table
+            Liste des types de carburant présents dans la table.
         """
         try:
             with DBConnection().connection as connection:

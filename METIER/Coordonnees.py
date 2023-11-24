@@ -1,24 +1,34 @@
 import math
-
 from geopy.geocoders import Nominatim
 
 class Coordonnees:
     def __init__(self, latitude, longitude):
+        """Initialise les coordonnées géographiques.
+
+        Parameters
+        ----------
+        latitude : float
+            La latitude de la localisation.
+        longitude : float
+            La longitude de la localisation.
+        """
         self.latitude = latitude
         self.longitude = longitude
 
     def calculer_distance(self, x, y):
-        """ Calcule la distance entre deux localisations, en fonction de leurs coordonnées 
-        
+        """Calcule la distance entre deux localisations en kilomètres.
+
         Parameters
         ----------
-        autre_coordonnee : Coordonnées
-            Le point de la destination dont on veut calculer la distance
+        x : float
+            La latitude de la destination.
+        y : float
+            La longitude de la destination.
 
         Returns
         -------
         float
-            La distance entre les deux localisations en kilomètres
+            La distance entre les deux localisations en kilomètres, arrondie à deux décimales.
         """
         # Convertir les degrés en radians
         lon1 = math.radians(self.longitude)
@@ -38,24 +48,32 @@ class Coordonnees:
 
         return round(distance, 2)
 
-   
     def transfo_adresse_GPS(self, adresse):
-        # Demandez à l'utilisateur d'entrer une adresse
+        """Transforme une adresse en coordonnées GPS.
+
+        Parameters
+        ----------
+        adresse : str
+            L'adresse à géocoder.
+
+        Returns
+        -------
+        tuple or None
+            Un tuple contenant la latitude et la longitude de l'adresse si elle est trouvée, sinon None.
+        """
+        # Convertit l'adresse en chaîne
         address = str(adresse)
 
-        # Créez un géocodeur avec le service Nominatim
+        # Crée un géocodeur avec le service Nominatim
         geocoder = Nominatim(user_agent="Mon application Python")
 
-        # Géocodez l'adresse
+        # Géocode l'adresse pour obtenir les coordonnées GPS
         location = geocoder.geocode(address)
 
-        # Obtenez les coordonnées GPS
+        # Récupère les coordonnées GPS si l'adresse est trouvée
         if location:
             latitude, longitude = location.latitude, location.longitude
             return latitude, longitude
         else:
             print("Adresse non trouvée.")
             return None
-
-
-

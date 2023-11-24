@@ -1,24 +1,18 @@
 from BDD.Connexion import DBConnection
 from utils.singleton import Singleton
-
 from METIER.StationsServices import StationsServices
 from METIER.Horaires import Horaires
 
 class HorairesToStationsDAO(metaclass=Singleton):
     def ajouter_association(self, station_id, horaire_id) -> bool:
-        """Ajouter une association station-horaire dans la base de données
+        """Ajoute une association station-horaire dans la base de données.
 
-        Parameters
-        ----------
-        station_id : int
-            ID de la station
-        horaire_id : int
-            ID de l'horaire
-
-        Returns
-        -------
-        created : bool
-            True si l'association a été créée avec succès, False sinon
+        :param station_id: ID de la station.
+        :type station_id: int
+        :param horaire_id: ID de l'horaire.
+        :type horaire_id: int
+        :return: True si l'association a été créée avec succès, False sinon.
+        :rtype: bool
         """
         created = False
 
@@ -29,8 +23,8 @@ class HorairesToStationsDAO(metaclass=Singleton):
                         "INSERT INTO Projet2A.Horaires_to_Stations(station_id, horaire_id) VALUES "
                         "(%(station_id)s, %(horaire_id)s);",
                         {
-                            "station_id": StationsServices.id_stations,
-                            "horaire_id": Horaires,
+                            "station_id": station_id,
+                            "horaire_id": horaire_id,
                         },
                     )
                     created = True
@@ -40,19 +34,14 @@ class HorairesToStationsDAO(metaclass=Singleton):
         return created
 
     def supprimer_association(self, station_id, horaire_id) -> bool:
-        """Supprimer une association station-horaire de la base de données
+        """Supprime une association station-horaire de la base de données.
 
-        Parameters
-        ----------
-        station_id : int
-            ID de la station
-        horaire_id : int
-            ID de l'horaire
-
-        Returns
-        -------
-        deleted : bool
-            True si l'association a été supprimée avec succès, False sinon
+        :param station_id: ID de la station.
+        :type station_id: int
+        :param horaire_id: ID de l'horaire.
+        :type horaire_id: int
+        :return: True si l'association a été supprimée avec succès, False sinon.
+        :rtype: bool
         """
         deleted = False
 
@@ -74,17 +63,12 @@ class HorairesToStationsDAO(metaclass=Singleton):
         return deleted
 
     def stations_ouvertes_pour_horaire(self, horaire_id):
-        """Trouver toutes les stations ouvertes pour un identifiant d'horaires donné
+        """Trouve toutes les stations ouvertes pour un identifiant d'horaire donné.
 
-        Parameters
-        ----------
-        horaire_id : int
-            ID de l'horaire
-
-        Returns
-        -------
-        stations : list
-            Liste des stations ouvertes pour l'identifiant d'horaires donné
+        :param horaire_id: ID de l'horaire.
+        :type horaire_id: int
+        :return: Liste des stations ouvertes pour l'identifiant d'horaire donné.
+        :rtype: list
         """
         stations = []
 
@@ -102,17 +86,12 @@ class HorairesToStationsDAO(metaclass=Singleton):
         return stations
 
     def horaires_de_station(self, station_id):
-        """Trouver les horaires d'une station donnée
+        """Trouve les horaires d'une station donnée.
 
-        Parameters
-        ----------
-        station_id : int
-            ID de la station
-
-        Returns
-        -------
-        horaires : list
-            Liste des horaires de la station donnée
+        :param station_id: ID de la station.
+        :type station_id: int
+        :return: Liste des horaires de la station donnée.
+        :rtype: list
         """
         horaires = []
 
