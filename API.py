@@ -12,7 +12,7 @@ class API:
     def __init__(self):
         self.app = FastAPI()
 
-        @self.app.get("/get_all_services", description= "Permet d'afficher tous les services délivrés par les stations services en France. Vous pouvez l'utiliser pour vous assurer d'avoir bien rentré le service que vous cherchiez dans votre filtre")
+        @self.app.get("/get/all/services", description= "Permet d'afficher tous les services délivrés par les stations services en France. Vous pouvez l'utiliser pour vous assurer d'avoir bien rentré le service que vous cherchiez dans votre filtre")
         def get_all_services():
             try:
                 services = Service_Station.get_all_services()
@@ -23,7 +23,7 @@ class API:
             except Exception as e:
                 return f"Erreur lors de la récupération des services : {e}"
         
-        @self.app.get("/get_all_type_carburants", description= "Affiche l'ensemble des carburants disponibles dans les stations services de la métropole ")
+        @self.app.get("/get/all/type/carburants", description= "Affiche l'ensemble des carburants disponibles dans les stations services de la métropole ")
         def get_all_type_carburants():
             try:
                 type_carburants = Service_Station.get_all_type_carburants()
@@ -109,9 +109,9 @@ class API:
                 return "Erreur dans la suppresion"
 
 
-
     def renouveler_base_de_donnees(self):
         Alimentation.reset_de_la_table()
 
     def run(self):
         uvicorn.run(self.app, host="0.0.0.0", port=8151)
+    
