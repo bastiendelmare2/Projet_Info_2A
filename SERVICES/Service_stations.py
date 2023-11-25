@@ -11,7 +11,29 @@ import json
 
 
 class Service_Station:
-    def trouver_stations(ref_latitude, ref_longitude, nom_type_carburant = None, nom_service = None, n = 3, distance_max=None):  
+    def trouver_stations(ref_latitude, ref_longitude, nom_type_carburant = None, nom_service = None, n = 3, distance_max=None):
+        """Trouve les stations de service autour d'une certaine localisation géographique.
+
+        Parameters
+        ----------
+        ref_latitude : float
+            Latitude de la position de référence.
+        ref_longitude : float
+            Longitude de la position de référence.
+        nom_type_carburant : str, optional
+            Le type de carburant recherché, par défaut None.
+        nom_service : str, optional
+            Le service spécifique recherché, par défaut None.
+        n : int, optional
+            Nombre de stations à retourner, par défaut 3.
+        distance_max : float, optional
+            Distance maximale pour les stations, par défaut None.
+
+        Returns
+        -------
+        tuple
+            Liste des stations de service, temps de départ, informations sur la position et le nombre de stations.
+        """
         liste_stations = StationsServices_Dao.filtre_stations(nom_type_carburant, nom_service)
         start_time = datetime.now()
         Coord = Coordonnees(ref_latitude, ref_longitude)
@@ -50,6 +72,26 @@ class Service_Station:
         }
 
     def trouver_stations_adresse(adresse_utilisateur, nom_type_carburant=None, nom_service=None, n=3, distance_max=None):
+        """Trouve les stations de service autour d'une adresse utilisateur donnée.
+
+        Parameters
+        ----------
+        adresse_utilisateur : str
+            Adresse de l'utilisateur.
+        nom_type_carburant : str, optional
+            Le type de carburant recherché, par défaut None.
+        nom_service : str, optional
+            Le service spécifique recherché, par défaut None.
+        n : int, optional
+            Nombre de stations à retourner, par défaut 3.
+        distance_max : float, optional
+            Distance maximale pour les stations, par défaut None.
+
+        Returns
+        -------
+        tuple
+            Liste des stations de service, temps de départ, informations sur la position et le nombre de stations.
+        """
         liste_stations = StationsServices_Dao.filtre_stations(nom_type_carburant, nom_service)
         start_time = datetime.now()
         
@@ -98,6 +140,22 @@ class Service_Station:
 
     @staticmethod
     def trouver_stations_par_ville(ville, nom_type_carburant=None, nom_service=None, ):
+        """Trouve les stations de service dans une ville donnée.
+
+        Parameters
+        ----------
+        ville : str
+            Nom de la ville à rechercher.
+        nom_type_carburant : str, optional
+            Le type de carburant recherché, par défaut None.
+        nom_service : str, optional
+            Le service spécifique recherché, par défaut None.
+
+        Returns
+        -------
+        list
+            Liste des stations de service correspondant aux critères donnés.
+        """
         try:
             liste_stations = StationsServices_Dao.filtre_stations(ville = ville, nom_type_carburant= nom_type_carburant, nom_service= nom_service)
             stations_list = []
@@ -124,6 +182,18 @@ class Service_Station:
 
     @staticmethod
     def stations_services_par_station_preferee(id_stations_pref):
+        """Récupère les services et les prix de carburant pour une station préférée spécifique.
+
+        Parameters
+        ----------
+        id_stations_pref : int
+            Identifiant de la station préférée.
+
+        Returns
+        -------
+        str or list
+            Services et prix de carburant pour la station préférée.
+        """
         try:
             return StationsPreferees_Dao.stations_services_par_station_preferee(id_stations_pref)
         except Exception as e:
@@ -133,6 +203,21 @@ class Service_Station:
         
     @staticmethod
     def enlever_station_de_station_preferee(id_stations, id_stations_pref):
+        """Retire une station de la liste des stations préférées.
+
+        Parameters
+        ----------
+        id_stations : int
+            Identifiant de la station.
+        id_stations_pref : int
+            Identifiant de la station préférée.
+
+        Returns
+        -------
+        bool
+            Résultat de l'opération de suppression.
+        """
+
         try:
             return StationsToStationsPrefereesDAO.dissocier_station_de_station_preferee(id_stations, id_stations_pref)
         except Exception as e:
@@ -141,6 +226,20 @@ class Service_Station:
 
     @staticmethod
     def ajouter_station_a_station_preferee(id_stations, id_stations_pref):
+        """Ajoute une station à la liste des stations préférées.
+
+        Parameters
+        ----------
+        id_stations : int
+            Identifiant de la station.
+        id_stations_pref : int
+            Identifiant de la station préférée.
+
+        Returns
+        -------
+        bool
+            Résultat de l'opération d'ajout.
+        """
         try:
             return StationsToStationsPrefereesDAO.associer_station_a_station_preferee(id_stations, id_stations_pref)
         except Exception as e:
@@ -149,6 +248,22 @@ class Service_Station:
 
     @staticmethod
     def creer_station_preferee(id_compte, nom_station, id_stations_pref):
+        """Crée une nouvelle station préférée pour un utilisateur.
+
+        Parameters
+        ----------
+        id_compte : int
+            Identifiant du compte utilisateur.
+        nom_station : str
+            Nom de la station.
+        id_stations_pref : int
+            Identifiant de la station préférée.
+
+        Returns
+        -------
+        bool
+            Résultat de l'opération de création.
+        """
         # Créer une nouvelle instance de StationsPreferees avec les données fournies
         nouvelle_station_pref = StationsPreferees(id_stations_pref=id_stations_pref, id_compte=id_compte, nom=nom_station)
         
@@ -158,11 +273,35 @@ class Service_Station:
 
     @staticmethod
     def supprimer_station_preferee(id_stations_pref):
+        """Supprime une station préférée.
+
+        Parameters
+        ----------
+        id_stations_pref : int
+            Identifiant de la station préférée.
+
+        Returns
+        -------
+        bool
+            Résultat de l'opération de suppression.
+        """
         # Utiliser la méthode DAO pour supprimer la station préférée
         return StationsPreferees_Dao.delete(id_stations_pref)
 
     @staticmethod
     def afficher_stations_preferees_utilisateur(id_compte):
+        """Affiche les stations préférées d'un utilisateur.
+
+        Parameters
+        ----------
+        id_compte : int
+            Identifiant du compte utilisateur.
+
+        Returns
+        -------
+        dict
+            Informations sur les stations préférées de l'utilisateur.
+        """
         # Utiliser la méthode DAO pour trouver toutes les stations préférées de l'utilisateur
         stations_preferees = StationsPreferees_Dao.trouver_par_id(id_compte)
         
@@ -179,6 +318,14 @@ class Service_Station:
 
     @staticmethod
     def get_all_services():
+        """Récupère tous les services disponibles.
+
+        Returns
+        -------
+        list
+            Liste de tous les services disponibles.
+        """
+
         try:
             return Services_Dao.get_all_services()
         except Exception as e:
@@ -187,6 +334,13 @@ class Service_Station:
 
     @staticmethod
     def get_all_type_carburants():
+        """Récupère tous les types de carburants disponibles.
+
+        Returns
+        -------
+        list
+            Liste de tous les types de carburants disponibles.
+        """
         try:
             return TypeCarburantDao.get_all_type_carburants()
         except Exception as e:
