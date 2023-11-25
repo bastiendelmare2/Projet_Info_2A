@@ -9,11 +9,11 @@ running_task = False
 def renouveler_base_periodiquement():
     global running_task
     running_task = True
-    print("Tâche en cours d'exécution...")
+    print("Importation des données en cours d'exécution...")
     api = API()
     api.renouveler_base_de_donnees()
     running_task = False
-    print("Tâche terminée.")  # Ajout d'un message pour indiquer la fin de la tâche
+    print("Importation terminée.")  
 
 def run_api():
     api = API()
